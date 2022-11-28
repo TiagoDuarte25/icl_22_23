@@ -9,23 +9,33 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int Id = 4;
+  int LET = 4;
   /** RegularExpression Id. */
-  int Num = 5;
+  int Id = 5;
   /** RegularExpression Id. */
-  int PLUS = 6;
+  int Num = 6;
   /** RegularExpression Id. */
-  int MINUS = 7;
+  int PLUS = 7;
   /** RegularExpression Id. */
-  int TIMES = 8;
+  int MINUS = 8;
   /** RegularExpression Id. */
-  int DIV = 9;
+  int TIMES = 9;
   /** RegularExpression Id. */
-  int LPAR = 10;
+  int DIV = 10;
   /** RegularExpression Id. */
-  int RPAR = 11;
+  int LPAR = 11;
   /** RegularExpression Id. */
-  int EL = 12;
+  int RPAR = 12;
+  /** RegularExpression Id. */
+  int EL = 13;
+  /** RegularExpression Id. */
+  int EQUALS = 14;
+  /** RegularExpression Id. */
+  int SEMICOLON = 15;
+  /** RegularExpression Id. */
+  int LBRACKET = 16;
+  /** RegularExpression Id. */
+  int RBRACKET = 17;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -36,6 +46,7 @@ public interface ParserConstants {
     "\" \"",
     "\"\\t\"",
     "\"\\r\"",
+    "\"let\"",
     "<Id>",
     "<Num>",
     "\"+\"",
@@ -45,6 +56,10 @@ public interface ParserConstants {
     "\"(\"",
     "\")\"",
     "\"\\n\"",
+    "\"=\"",
+    "\";\"",
+    "\"{\"",
+    "\"}\"",
   };
 
 }
