@@ -3,10 +3,10 @@ import java.util.List;
 
 public class ASTDef implements ASTNode {
 
-    List<Pair<String, ASTNode>> variables;
+    List<Bind> variables;
     ASTNode node;
 
-    public ASTDef(List<Pair<String, ASTNode>> variables, ASTNode node) {
+    public ASTDef(List<Bind> variables, ASTNode node) {
         this.variables = variables;
         this.node = node;
     }
@@ -17,11 +17,9 @@ public class ASTDef implements ASTNode {
         Environment env = e;
 
         env.beginScope();
-
-        Iterator<Pair<String, ASTNode>> it = variables.iterator();
-        while(it.hasNext()) {
-            Pair<String, ASTNode> pair = it.next();
-            env.assoc(pair.getFirst(), pair.getSecond().eval(e));
+        for(int i = 0; i < variables.size(); i++) {
+            //env.assoc(pair.getId(), pair.getNode().eval(e));
+            env.assoc(variables.get(i).getId(), new Coordinates(e.depth(), "v"+ i));
         }
 
         int val = node.eval(env);
@@ -30,7 +28,7 @@ public class ASTDef implements ASTNode {
         return val;
     }
     @Override
-    public void compile(CodeBlock c) {
+    public void compile(CodeBlock c, Environment env) {
         
     }
 }

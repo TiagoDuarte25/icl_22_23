@@ -59,9 +59,9 @@ public class Parser implements ParserConstants {
       }
       t2 = Term();
 if (op.kind == PLUS)
-                         t1 = new ASTPlus(t1,t2);
+                    t1 = new ASTPlus(t1,t2);
                    else {
-                      t1 = new ASTSub(t1,t2);}
+                    t1 = new ASTSub(t1,t2);}
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
@@ -104,7 +104,7 @@ if (op.kind == TIMES)
 
   static final public ASTNode Fact() throws ParseException {Token n;
   ASTNode t1, t2;
-  List<Pair<String, ASTNode>> variables = new ArrayList<Pair<String, ASTNode>>();
+  List<Bind> variables = new ArrayList<Bind>();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case Num:{
       n = jj_consume_token(Num);
@@ -119,9 +119,8 @@ t1 = new ASTNum(Integer.parseInt(n.image));
       }
     case MINUS:{
       jj_consume_token(MINUS);
-      t1 = Exp();
-System.out.println("Entrei");
-          t1 = new ASTUMinus(t1);
+      t1 = Fact();
+t1 = new ASTUMinus(t1);
       break;
       }
     case LBRACKET:{
@@ -133,7 +132,7 @@ System.out.println("Entrei");
         jj_consume_token(EQUALS);
         t1 = Exp();
         jj_consume_token(SEMICOLON);
-variables.add(new Pair(n.image, t1));
+variables.add(new Bind(n.image, t1));
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case LET:{
           ;

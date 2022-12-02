@@ -10,7 +10,7 @@ int val;
         }
 
         @Override
-        public void compile(CodeBlock c) {
+        public void compile(CodeBlock c, Environment env) {
                 c.emit("sipush "+ val);
         }
 

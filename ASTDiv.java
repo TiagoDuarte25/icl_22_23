@@ -15,9 +15,9 @@ public class ASTDiv implements ASTNode {
             }
 
             @Override
-            public void compile(CodeBlock c) {
-                lhs.compile(c);
-                rhs.compile(c);
+            public void compile(CodeBlock c, Environment env) {
+                lhs.compile(c, env);
+                rhs.compile(c, env);
                 c.emit("idiv");
             }
 }

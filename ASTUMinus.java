@@ -15,7 +15,7 @@ public class ASTUMinus implements ASTNode {
         }
 
         @Override
-        public void compile(CodeBlock c) {
+        public void compile(CodeBlock c, Environment env) {
                 c.emit("ineg "+ lhs);
         }
 }
