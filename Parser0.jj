@@ -1,5 +1,6 @@
 PARSER_BEGIN(Parser)
 
+import java.util.*;
 
 /** ID lister. */
 public class Parser {
@@ -12,7 +13,7 @@ public class Parser {
     while (true) {
     try {
     exp = parser.Start();
-    System.out.println( exp.eval() );
+    System.out.println( exp.eval(new Environment(null)) );
     } catch (Exception e) {
       System.out.println ("Syntax Error!");
       parser.ReInit(System.in);
@@ -33,6 +34,8 @@ SKIP :
 
 TOKEN :
 {
+  < LET: "let">
+  |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < Num: (["0"-"9"]) + >
@@ -45,11 +48,19 @@ TOKEN :
   |
   < DIV : "/">
   |
-  < LPAR : "(" >
+  < LPAR : "(">
   |
-  < RPAR : ")" >
+  < RPAR : ")">
   |
-  < EL: "\n" >
+  < EL: "\n">
+  |
+  < EQUALS: "=">
+  |
+  < SEMICOLON: ";">
+  |
+  < LBRACKET: "{">
+  |
+  < RBRACKET: "}">
 }
 
 ASTNode Start():
@@ -65,16 +76,19 @@ ASTNode Exp() :
 {
      t1=Term() ( ( op=<PLUS> | op=<MINUS>) t2=Term() 
                  { if (op.kind == PLUS) 
-                         t1 = new ASTPlus(t1,t2);
-                   else  t1 = new ASTSub(t1,t2);
+                    t1 = new ASTPlus(t1,t2);
+                   else {
+                      t1 = new ASTSub(t1,t2);}  
                  } 
-               ) *
+               )*
      { return t1; } 
 }
 
 ASTNode Term() :
-{Token op;
-  ASTNode t1, t2;}
+{
+  Token op;
+  ASTNode t1, t2;
+}
 {
      t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term() 
  		 {
@@ -89,11 +103,39 @@ ASTNode Term() :
 
 
 ASTNode Fact() :
-{ Token n; 
-  ASTNode t;}
+{ 
+  Token n; 
+  ASTNode t1, t2;
+  List<Pair<String, ASTNode>> variables = new ArrayList<Pair<String, ASTNode>>();
+}
 {
-   ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); } | <LPAR> t=Exp() <RPAR> | <MINUS> t=Exp() {t = new ASTUMinus(t);})
-   { return t; }
+   (
+      n=<Num> 
+      { 
+        t1 = new ASTNum(Integer.parseInt(n.image)); 
+      } 
+      | <LPAR> 
+          t1=Exp() 
+        <RPAR> 
+      | <MINUS> 
+        t1=Exp() 
+        {
+          System.out.println("Entrei");
+          t1 = new ASTUMinus(t1);
+        }
+      | <LBRACKET> 
+        (<LET> n = <Id> <EQUALS> t1 = Exp() <SEMICOLON> {variables.add(new Pair(n.image, t1));})+
+        t2 = Exp() 
+        <RBRACKET>
+        <SEMICOLON>
+        <SEMICOLON>
+        {
+          t1 = new ASTDef(variables, t2);
+        }
+      |
+        n = <Id> { t1 = new ASTId(n.image);}
+    )
+   { return t1; }
 }
 
 

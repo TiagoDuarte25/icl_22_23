@@ -8,7 +8,7 @@ public class ICLInterpreter {
     while (true) {
     try {
     exp = parser.Start();
-    System.out.println( exp.eval() );
+    System.out.println( exp.eval(new Environment(null)) );
     } catch (Exception e) {
       System.out.println ("Syntax Error!");
       parser.ReInit(System.in);

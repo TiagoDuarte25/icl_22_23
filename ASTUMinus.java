@@ -2,9 +2,9 @@ public class ASTUMinus implements ASTNode {
 
         ASTNode lhs;
     
-        public int eval()
+        public int eval(Environment e)
         { 
-            int val = lhs.eval();
+            int val = lhs.eval(e);
 
             return val*-1; 
         }
