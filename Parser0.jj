@@ -76,10 +76,11 @@ ASTNode Exp() :
 {
      t1=Term() ( ( op=<PLUS> | op=<MINUS>) t2=Term() 
                  { if (op.kind == PLUS) 
-                         t1 = new ASTPlus(t1,t2);
-                   else  t1 = new ASTSub(t1,t2);
+                    t1 = new ASTPlus(t1,t2);
+                   else {
+                      t1 = new ASTSub(t1,t2);}  
                  } 
-               ) *
+               )*
      { return t1; } 
 }
 
@@ -119,14 +120,12 @@ ASTNode Fact() :
       | <MINUS> 
         t1=Exp() 
         {
+          System.out.println("Entrei");
           t1 = new ASTUMinus(t1);
         }
       | <LBRACKET> 
-        ( <LET>
-          n = <Id> 
-          <EQUALS> t1 = Exp() <SEMICOLON> {variables.add(new Pair(n.image, t1));}
-        )+
-         t2 = Exp() 
+        (<LET> n = <Id> <EQUALS> t1 = Exp() <SEMICOLON> {variables.add(new Pair(n.image, t1));})+
+        t2 = Exp() 
         <RBRACKET>
         <SEMICOLON>
         <SEMICOLON>

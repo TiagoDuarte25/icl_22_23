@@ -60,7 +60,8 @@ public class Parser implements ParserConstants {
       t2 = Term();
 if (op.kind == PLUS)
                          t1 = new ASTPlus(t1,t2);
-                   else  t1 = new ASTSub(t1,t2);
+                   else {
+                      t1 = new ASTSub(t1,t2);}
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
@@ -119,7 +120,8 @@ t1 = new ASTNum(Integer.parseInt(n.image));
     case MINUS:{
       jj_consume_token(MINUS);
       t1 = Exp();
-t1 = new ASTUMinus(t1);
+System.out.println("Entrei");
+          t1 = new ASTUMinus(t1);
       break;
       }
     case LBRACKET:{

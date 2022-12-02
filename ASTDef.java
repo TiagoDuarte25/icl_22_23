@@ -14,7 +14,9 @@ public class ASTDef implements ASTNode {
     @Override
     public int eval(Environment e) {
 
-        Environment env = e.beginScope();
+        Environment env = e;
+
+        env.beginScope();
 
         Iterator<Pair<String, ASTNode>> it = variables.iterator();
         while(it.hasNext()) {
