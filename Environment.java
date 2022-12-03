@@ -1,21 +1,21 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class Environment<Type> {
+public class Environment<IValue> {
 
-    private Environment<Type> previousEnv;
-    private Map<String, Type> variables;
+    private Environment<IValue> previousEnv;
+    private Map<String, IValue> variables;
 
-    public Environment(Environment<Type> previousEnv) {
+    public Environment(Environment<IValue> previousEnv) {
         this.previousEnv = previousEnv;
-        variables = new HashMap<String, Type>();
+        variables = new HashMap<String, IValue>();
     }
 
-    public Environment<Type> beginScope() {
-        return new Environment(this);
+    public Environment<IValue> beginScope() {
+        return new Environment<IValue>(this);
     }
 
-    public Environment<Type> endScope() {
+    public Environment<IValue> endScope() {
         return previousEnv;
     }
 
@@ -25,7 +25,7 @@ public class Environment<Type> {
         return previousEnv.depth() + 1;
     }
 
-    public void assoc(String id, Type bind) {
+    public void assoc(String id, IValue bind) {
         variables.put(id, bind);
     }
 /*
@@ -37,7 +37,7 @@ public class Environment<Type> {
         return previousEnv.find(id);
     }*/
 
-    public Type find(String id) throws Exception {
+    public IValue find(String id) throws Exception {
         if (variables.containsKey(id))
             return variables.get(id);
         if (previousEnv == null)

@@ -17,7 +17,7 @@ public class ICLCompiler {
         File header = new File("../Header.j");
         try	{
         ASTNode	ast	= parser.Start();
-        ast.compile(code, new Environment(null));
+        ast.compile(code, new Environment<IValue>(null));
         code.dump((new PrintStream(header)));
         } catch	(Exception	e)	{	
             System.out.println	("Syntax	Error!");

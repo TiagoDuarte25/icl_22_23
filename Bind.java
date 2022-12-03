@@ -1,5 +1,5 @@
 
-public class Bind  implements Type {
+public class Bind implements IValue {
 
     private String id;
     private ASTNode node;
