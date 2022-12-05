@@ -1,8 +1,9 @@
 import java.io.PrintStream;
 
 class	CodeBlock	{	
-    String	code[];	
-    int	pc;
+    String	code[];
+    String init[];
+    int	pc, pi;
 
     private static final String COMPILE_START = ".class public Header\n"
     + ".super java/lang/Object\n"
@@ -14,7 +15,8 @@ class	CodeBlock	{
     + "   invokenonvirtual java/lang/Object/<init>()V\n"
     + "   return\n"
     + ".end method\n"
-    + "\n"
+    + "\n";
+    private static final String START = "\n"
     + ".method public static main([Ljava/lang/String;)V\n"
     + "\n"
     + "       ; set limits used by this method\n"
@@ -46,16 +48,24 @@ class	CodeBlock	{
     
     CodeBlock () {
         code = new String[10000];
+        init = new String[10000];
         pc = 0;
+        pi = 0;
     }
     
     void emit(String opcode){	
         code[pc++] = opcode;	
     }
 
+    void emitI(String opcode) {init[pi++] = opcode;}
+
     void dump(PrintStream f)	{ //	dumps	code	to	f
 
         f.print(COMPILE_START);
+            for(int i = 0; init[i] != null; i++) {
+                f.println(init[i]);
+            }
+        f.println(START);
         
         for(int i = 0; code[i] != null; i++) {
             f.println("\t\t\t" + code[i]);

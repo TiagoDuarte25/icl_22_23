@@ -1,5 +1,5 @@
 public class ASTId implements ASTNode{
-    
+
     private String id;
     private final String GET_FIELD_FRAME = "\t\t\tgetfield frame_%d/sl Lframe_%d";
     private final String EMIT = "\n\t\t\taload 3\n%s";
@@ -35,5 +35,6 @@ public class ASTId implements ASTNode{
         frames += String.format("\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), "I");
         String res = String.format(EMIT, frames);
         c.emit(res);
+
     }
 }

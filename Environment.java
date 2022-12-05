@@ -12,7 +12,7 @@ public class Environment<IValue> {
     }
 
     public Environment<IValue> beginScope() {
-        return new Environment<IValue>(this);
+        return new Environment(this);
     }
 
     public Environment<IValue> endScope() {
