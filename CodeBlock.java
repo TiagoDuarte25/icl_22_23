@@ -1,4 +1,4 @@
-import java.io.PrintStream;
+import java.io.*;
 
 class	CodeBlock	{	
     String	code[];
@@ -31,7 +31,7 @@ class	CodeBlock	{
     + "\n"
     + "       ; place bytecodes here\n"
     + "\n"
-    + "       ; START    (4+5)*(8*2) = \n";
+    + "       ; START = \n";
 
     private static final String COMPILE_END = "       ; END \n"
     + "\n"
@@ -62,11 +62,14 @@ class	CodeBlock	{
     void dump(PrintStream f)	{ //	dumps	code	to	f
 
         f.print(COMPILE_START);
-            for(int i = 0; init[i] != null; i++) {
-                f.println(init[i]);
-            }
+
+        for(int i = 0; init[i] != null; i++) {
+            f.println(init[i]);
+        }
+
         f.println(START);
-        
+
+
         for(int i = 0; code[i] != null; i++) {
             f.println("\t\t\t" + code[i]);
         }

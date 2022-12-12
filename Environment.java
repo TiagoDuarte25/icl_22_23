@@ -25,7 +25,9 @@ public class Environment<IValue> {
         return previousEnv.depth() + 1;
     }
 
-    public void assoc(String id, IValue bind) {
+    public void assoc(String id, IValue bind){
+        //if (variables.containsKey(id))
+            //throw new IDDeclaredTwiceException("Variable with id " + id + " already exists");
         variables.put(id, bind);
     }
 /*

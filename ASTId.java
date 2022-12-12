@@ -1,8 +1,8 @@
 public class ASTId implements ASTNode{
 
     private String id;
-    private final String GET_FIELD_FRAME = "\t\t\tgetfield frame_%d/sl Lframe_%d";
-    private final String EMIT = "\n\t\t\taload 3\n%s";
+    private final String GET_FIELD_FRAME = "\t\t\tgetfield frame_%d/sl Lframe_%d;";
+    private final String EMIT = "\n\t\t\taload_3\n%s";
 
     public ASTId(String id) {
         this.id = id;
@@ -32,7 +32,7 @@ public class ASTId implements ASTNode{
         for(int i = 0; i < level_shift; i++) {
             frames += String.format(GET_FIELD_FRAME, idFrame - i, idFrame - (i+1));
         }
-        frames += String.format("\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), "I");
+        frames += String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), "I");
         String res = String.format(EMIT, frames);
         c.emit(res);
 
