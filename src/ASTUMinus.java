@@ -5,9 +5,7 @@ public class ASTUMinus implements ASTNode {
         public IValue eval(Environment<IValue> e) throws Exception {
             IValue val = lhs.eval(e);
             if (val instanceof VInt)
-                return new VInt(((VInt) val).getVal()*-1);
-            if (val instanceof VBool)
-                return new VBool(!((VBool) val).getVal());
+                return new VInt(-((VInt) val).getVal());
             throw new Exception("Invalid type");
         }
         

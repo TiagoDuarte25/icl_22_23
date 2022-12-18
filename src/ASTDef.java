@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.List;
 
 public class ASTDef implements ASTNode {
@@ -13,11 +12,10 @@ public class ASTDef implements ASTNode {
 
     @Override
     public IValue eval(Environment<IValue> e) throws Exception {
-        Environment env = e.beginScope();
-        System.out.printf("env1: %s \n", e.depth());
-        System.out.printf("env2: %s \n", env.depth());
-        for(int i = 0; i < variables.size(); i++) {
-            e.assoc(variables.get(i).getId(), variables.get(i).getNode().eval(e));
+        Environment<IValue> env = e.beginScope();
+
+        for (Bind variable : variables) {
+            e.assoc(variable.getId(), variable.getNode().eval(e));
         }
         IValue val;
         if(node instanceof ASTDef){
@@ -26,12 +24,13 @@ public class ASTDef implements ASTNode {
         else
             val = node.eval(e);
 
+
         env.endScope();
         return val;
     }
     @Override
     public void compile(CodeBlock c, Environment<IValue> e) {
-        Environment env = e.beginScope();
+        Environment<IValue> env = e.beginScope();
 
         startFrame(c, e);
 
@@ -57,7 +56,7 @@ public class ASTDef implements ASTNode {
         int frameId = env.depth()-1;
 
         c.emitI(String.format("\n.class public frame_%d", frameId));
-        c.emitI(String.format(".super java/lang/Object"));
+        c.emitI(".super java/lang/Object");
 
         c.emit(String.format("\n\t\t\tnew frame_%d",frameId));
         c.emit("dup");

@@ -4,10 +4,12 @@ public class ASTSub implements ASTNode {
     
             public IValue eval(Environment<IValue> e) throws Exception {
                 IValue v1 = lhs.eval(e);
-                IValue v2 = rhs.eval(e);
-                if (v1 instanceof VInt && v2 instanceof VInt)
-                    return new VInt(((VInt) v1).getVal() - ((VInt) v2).getVal());
-                throw new Exception("Illegal arguments '-' operation");
+                if (v1 instanceof VInt) {
+                    IValue v2 = rhs.eval(e);
+                    if ( v2 instanceof VInt )
+                        return new VInt(((VInt) v1).getVal() - ((VInt) v2).getVal());
+                }
+                throw new Exception("Illegal arguments to '-' operation");
             }
         
             public ASTSub(ASTNode l, ASTNode r)
