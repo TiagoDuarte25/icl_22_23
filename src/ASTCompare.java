@@ -16,32 +16,23 @@ public class ASTCompare implements ASTNode {
         IValue v1 = lhs.eval(env);
         IValue v2 = rhs.eval(env);
 
-        switch(op) {
-            case "==":
-                if (v1 instanceof VInt && v2 instanceof VInt)
+        if (v1 instanceof VInt && v2 instanceof VInt) {
+            switch(op) {
+                case "==":
                     return new VBool(((VInt) v1).getVal() == ((VInt) v2).getVal());
-                if (v1 instanceof VBool && v2 instanceof VBool)
-                    return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
-                break;
-            case "<":
-                if (v1 instanceof VInt && v2 instanceof VInt)
+                case "<":
                     return new VBool(((VInt) v1).getVal() < ((VInt) v2).getVal());
-                break;
-            case ">":
-                if (v1 instanceof VInt && v2 instanceof VInt)
+                case ">":
                     return new VBool(((VInt) v1).getVal() > ((VInt) v2).getVal());
-                break;
-            case "<=":
-                if (v1 instanceof VInt && v2 instanceof VInt)
+                case "<=":
                     return new VBool(((VInt) v1).getVal() <= ((VInt) v2).getVal());
-                break;
-            case ">=":
-                if (v1 instanceof VInt && v2 instanceof VInt)
+                case ">=":
                     return new VBool(((VInt) v1).getVal() >= ((VInt) v2).getVal());
-                break;
-            default: break;
+                default: break;
+            }
         }
-
+        if (v1 instanceof VBool && v2 instanceof VBool && op.equals("=="))
+            return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
 
         throw new Exception("Invalid arguments to '"+ op +"' operator");
     }
