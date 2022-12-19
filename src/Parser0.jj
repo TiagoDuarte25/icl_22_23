@@ -11,13 +11,13 @@ public class Parser {
     ASTNode exp;
 
     while (true) {
-    try {
-    exp = parser.Start();
-    System.out.println( exp.eval(new Environment(null)) );
-    } catch (Exception e) {
-      System.out.println ("Syntax Error!");
-      parser.ReInit(System.in);
-    }
+        try {
+        exp = parser.Start();
+        System.out.println( exp.eval(new Environment(null)) );
+        } catch (Exception e) {
+          System.out.println ("Syntax Error!");
+          parser.ReInit(System.in);
+        }
     }
   }
 
@@ -39,6 +39,26 @@ TOKEN :
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < Num: (["0"-"9"]) + >
+  |
+  < TRUE: "true" >
+  |
+  < FALSE: "false" >
+  |
+  < NOT: "~" >
+  |
+  < AND: "&&" >
+  |
+  < OR: "||" >
+  |
+  < EQUALTO: "==">
+  |
+  < GREATERTHAN: ">" >
+  |
+  < GREATEREQTHAN: ">=" >
+  |
+  < LESSTHAN: "<" >
+  |
+  < LESSEQTHAN: "<=" >
   |
   < PLUS : "+" >
   |
@@ -70,6 +90,21 @@ ASTNode Start():
    { return t; }
 }
 
+ASTNode boolExp():
+{
+    ASTNode t1, t2;
+    Token op;
+}
+{
+    t1 = Exp()
+    (
+    ( op = <EQUALTO> | op = <GREATERTHAN> | op = <GREATEREQTHAN> | op = <LESSTHAN> | op = <LESSEQTHAN> )
+    t2 = Exp()
+    { t1 = new ASTCompare(t1, t2, op.image); }
+    )?
+    { return t1; }
+}
+
 ASTNode Exp() :
 { Token op;
   ASTNode t1, t2; }
@@ -90,7 +125,7 @@ ASTNode Term() :
   ASTNode t1, t2;
 }
 {
-     t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term() 
+     t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term()
  		 {
       if (op.kind == TIMES)
         t1= new ASTMult(t1,t2);
