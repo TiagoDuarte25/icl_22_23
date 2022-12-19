@@ -36,13 +36,13 @@ TOKEN :
 {
   < LET: "let">
   |
-  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-  |
   < Num: (["0"-"9"]) + >
   |
   < TRUE: "true" >
   |
   < FALSE: "false" >
+  |
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NOT: "~" >
   |
@@ -94,8 +94,7 @@ ASTNode boolAdd():
 { ASTNode t1, t2; }
 {
     t1 = boolMult()
-    ( <OR> t2 = boolMult() )*
-    { t1 = new ASTOr(t1, t2); }
+    ( <OR> t2 = boolAdd() { t1 = new ASTOr(t1, t2); } )*
     { return t1; }
 }
 
@@ -103,8 +102,7 @@ ASTNode boolMult():
 { ASTNode t1, t2; }
 {
     t1 = relops()
-    ( op = <AND> t2 = relops() )*
-    { t1 = new ASTAnd(t1, t2); }
+    ( <AND> t2 = boolMult() { t1 = new ASTAnd(t1, t2); } )*
     { return t1; }
 }
 
@@ -116,9 +114,9 @@ ASTNode relops():
 {
     t1 = Exp()
     (
-    ( op = <EQUALTO> | op = <GREATERTHAN> | op = <GREATEREQTHAN> | op = <LESSTHAN> | op = <LESSEQTHAN> )
-    t2 = Exp()
-    { t1 = new ASTCompare(t1, t2, op.image); }
+        ( op = <EQUALTO> | op = <GREATERTHAN> | op = <GREATEREQTHAN> | op = <LESSTHAN> | op = <LESSEQTHAN> )
+        t2 = Exp()
+        { t1 = new ASTCompare(t1, t2, op.image); }
     )?
     { return t1; }
 }
@@ -128,7 +126,8 @@ ASTNode Exp() :
   ASTNode t1, t2; }
 {
      t1=Term() ( ( op=<PLUS> | op=<MINUS>) t2=Term() 
-                 { if (op.kind == PLUS) 
+                 { System.out.println("ENTROU t1: " + t1.toString());
+                   if (op.kind == PLUS)
                     t1 = new ASTPlus(t1,t2);
                    else {
                     t1 = new ASTSub(t1,t2);}  
@@ -163,29 +162,15 @@ ASTNode Fact() :
 }
 {
    (
-      n=<Num> 
-      { 
-        t1 = new ASTNum(Integer.parseInt(n.image)); 
-      } 
-      | <LPAR> 
-          t1=Exp() 
-        <RPAR> 
-      | <MINUS> 
-        t1=Fact() 
-        {
-          t1 = new ASTUMinus(t1);
-        }
-      | <LBRACKET> 
-        (<LET> n = <Id> <EQUALS> t1 = Exp() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+
-        t2 = Exp() 
-        <RBRACKET>
-        <SEMICOLON>
-        <SEMICOLON>
-        {
-          t1 = new ASTDef(variables, t2);
-        }
-      |
-        n = <Id> { t1 = new ASTId(n.image);}
+      n=<Num> { t1 = new ASTNum(Integer.parseInt(n.image)); }
+      | n = <Id> { t1 = new ASTId(n.image);}
+      | <TRUE> { t1 = new ASTBool(true); }
+      | <FALSE> { t1 = new ASTBool(false); }
+      | <LPAR> t1 = boolAdd() <RPAR>
+      | <NOT> t1 = boolAdd() { t1 = new ASTNot(t1); }
+      | <MINUS> t1=Fact() { t1 = new ASTUMinus(t1); }
+      | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = boolAdd() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = boolAdd() <RBRACKET><SEMICOLON><SEMICOLON>
+        { t1 = new ASTDef(variables, t2); }
     )
    { return t1; }
 }

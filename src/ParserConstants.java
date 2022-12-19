@@ -11,31 +11,51 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int LET = 4;
   /** RegularExpression Id. */
-  int Id = 5;
+  int Num = 5;
   /** RegularExpression Id. */
-  int Num = 6;
+  int TRUE = 6;
   /** RegularExpression Id. */
-  int PLUS = 7;
+  int FALSE = 7;
   /** RegularExpression Id. */
-  int MINUS = 8;
+  int Id = 8;
   /** RegularExpression Id. */
-  int TIMES = 9;
+  int NOT = 9;
   /** RegularExpression Id. */
-  int DIV = 10;
+  int AND = 10;
   /** RegularExpression Id. */
-  int LPAR = 11;
+  int OR = 11;
   /** RegularExpression Id. */
-  int RPAR = 12;
+  int EQUALTO = 12;
   /** RegularExpression Id. */
-  int EL = 13;
+  int GREATERTHAN = 13;
   /** RegularExpression Id. */
-  int EQUALS = 14;
+  int GREATEREQTHAN = 14;
   /** RegularExpression Id. */
-  int SEMICOLON = 15;
+  int LESSTHAN = 15;
   /** RegularExpression Id. */
-  int LBRACKET = 16;
+  int LESSEQTHAN = 16;
   /** RegularExpression Id. */
-  int RBRACKET = 17;
+  int PLUS = 17;
+  /** RegularExpression Id. */
+  int MINUS = 18;
+  /** RegularExpression Id. */
+  int TIMES = 19;
+  /** RegularExpression Id. */
+  int DIV = 20;
+  /** RegularExpression Id. */
+  int LPAR = 21;
+  /** RegularExpression Id. */
+  int RPAR = 22;
+  /** RegularExpression Id. */
+  int EL = 23;
+  /** RegularExpression Id. */
+  int EQUALS = 24;
+  /** RegularExpression Id. */
+  int SEMICOLON = 25;
+  /** RegularExpression Id. */
+  int LBRACKET = 26;
+  /** RegularExpression Id. */
+  int RBRACKET = 27;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -47,8 +67,18 @@ public interface ParserConstants {
     "\"\\t\"",
     "\"\\r\"",
     "\"let\"",
-    "<Id>",
     "<Num>",
+    "\"true\"",
+    "\"false\"",
+    "<Id>",
+    "\"~\"",
+    "\"&&\"",
+    "\"||\"",
+    "\"==\"",
+    "\">\"",
+    "\">=\"",
+    "\"<\"",
+    "\"<=\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
