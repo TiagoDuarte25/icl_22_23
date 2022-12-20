@@ -94,7 +94,7 @@ ASTNode boolAdd():
 { ASTNode t1, t2; }
 {
     t1 = boolMult()
-    ( <OR> t2 = boolAdd() { t1 = new ASTOr(t1, t2); } )*
+    ( <OR> t2 = boolMult() { t1 = new ASTOr(t1, t2); } )*
     { return t1; }
 }
 
@@ -102,7 +102,7 @@ ASTNode boolMult():
 { ASTNode t1, t2; }
 {
     t1 = relops()
-    ( <AND> t2 = boolMult() { t1 = new ASTAnd(t1, t2); } )*
+    ( <AND> t2 = relops() { t1 = new ASTAnd(t1, t2); } )*
     { return t1; }
 }
 

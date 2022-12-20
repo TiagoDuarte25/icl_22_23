@@ -42,8 +42,8 @@ public class Parser implements ParserConstants {
         break label_1;
       }
       jj_consume_token(OR);
-      t2 = boolAdd();
-                            t1 = new ASTOr(t1, t2);
+      t2 = boolMult();
+                             t1 = new ASTOr(t1, t2);
     }
       {if (true) return t1;}
     throw new Error("Missing return statement in function");
@@ -63,8 +63,8 @@ public class Parser implements ParserConstants {
         break label_2;
       }
       jj_consume_token(AND);
-      t2 = boolMult();
-                              t1 = new ASTAnd(t1, t2);
+      t2 = relops();
+                            t1 = new ASTAnd(t1, t2);
     }
       {if (true) return t1;}
     throw new Error("Missing return statement in function");
