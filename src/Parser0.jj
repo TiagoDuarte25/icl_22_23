@@ -34,6 +34,8 @@ SKIP :
 
 TOKEN :
 {
+  < WHILE: "while" >
+  |
   < LET: "let">
   |
   < Num: (["0"-"9"]) + >
@@ -114,7 +116,7 @@ ASTNode SE():
     ASTNode t1, t2;
 }
 {
-    t1 = boolAdd() ( <ASSIGN> t2 = boolAdd() { t1 = new ASTAssign(t1, t2); } )*
+    t1 = Fact() ( <ASSIGN> t2 = boolAdd() { t1 = new ASTAssign(t1, t2); } )*
 
     { return t1; }
 }
@@ -203,6 +205,7 @@ ASTNode Fact() :
       | <NEW> t1 = boolAdd() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
       | <IF> t1 = boolAdd() <LBRACKET> t2=S() <RBRACKET> (<LBRACKET> t3=S() <RBRACKET>)? {t1 = new ASTIf(t1, t2, t3);}
+      | <WHILE> t1 = boolAdd() <LBRACKET> t2 = S() <RBRACKET>  { t1 = new ASTWhile(t1, t2); }
     )
    { return t1; }
 }
