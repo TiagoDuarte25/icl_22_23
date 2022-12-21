@@ -1,4 +1,10 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeBool;
+
 public class ASTIf implements ASTNode {
+
+    private static final String OPERATOR = "if";
 
     ASTNode condition, exp1, exp2;
 
@@ -15,23 +21,32 @@ public class ASTIf implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         IValue cond = condition.eval(env);
-        if (cond instanceof VBool) {
-            IValue exp1 = this.exp1.eval(env);
-            if (((VBool) cond).getVal())
-                return exp1;
-            else {
-                if (exp2 != null)
-                    return this.exp2.eval(env);
-                return null;
-            }
-        }
-        throw new Exception("Invalid if statement");
+        IValue exp1 = this.exp1.eval(env);
+        if (((VBool) cond).getVal())
+            return exp1;
+        else
+            return exp2.eval(env);
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType conditionType = condition.typecheck(env);
+
+        if (conditionType instanceof TypeBool) {
+            IType exp1Type = exp1.typecheck(env);
+            IType exp2Type = exp2.typecheck(env);
+
+            if (exp1Type.equals(exp2Type))
+                return exp1Type;
+        }
+
+        throw new TypeError(OPERATOR);
     }
 }

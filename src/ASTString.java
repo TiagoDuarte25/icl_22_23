@@ -1,19 +1,20 @@
 import exceptions.TypeError;
 import types.IType;
-import types.TypeRef;
+import types.TypeString;
 
-public class ASTNew implements ASTNode {
+import javax.lang.model.util.Types;
 
-    ASTNode expr;
+public class ASTString implements ASTNode {
 
-    public ASTNew(ASTNode expr) {
-        this.expr = expr;
+    private String text;
+
+    public ASTString(String text) {
+        this.text = text;
     }
 
     @Override
     public IValue eval(Environment<IValue> env) {
-        IValue v1 = expr.eval(env);
-        return new VCell(v1);
+        return new VString(text.replaceAll("\\p{P}",""));
     }
 
     @Override
@@ -23,7 +24,6 @@ public class ASTNew implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
-        IType expType = expr.typecheck(env);
-        return new TypeRef(expType);
+        return new TypeString();
     }
 }

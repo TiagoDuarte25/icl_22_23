@@ -1,3 +1,6 @@
+import exceptions.TypeError;
+import types.IType;
+
 public class ASTId implements ASTNode{
 
     private String id;
@@ -12,7 +15,6 @@ public class ASTId implements ASTNode{
         try {
             return e.find(id);
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         return null;
@@ -36,5 +38,14 @@ public class ASTId implements ASTNode{
         String res = String.format(EMIT, frames);
         c.emit(res);
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        try {
+            return env.find(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

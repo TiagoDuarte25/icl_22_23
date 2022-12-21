@@ -1,3 +1,6 @@
+import exceptions.TypeError;
+import types.IType;
+
 import java.util.List;
 
 public class ASTDef implements ASTNode {
@@ -11,7 +14,23 @@ public class ASTDef implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> e) throws Exception {
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        Environment<IType> envLocal = env.beginScope();
+        for (Bind variable : variables) {
+            IType varType = variable.getNode().typecheck(env);
+            env.assoc(variable.getId(), varType);
+        }
+
+
+        IType nodeType = node.typecheck(envLocal);
+
+        envLocal.endScope();
+
+        return nodeType;
+    }
+
+    @Override
+    public IValue eval(Environment<IValue> e) {
         Environment<IValue> env = e.beginScope();
 
         for (Bind variable : variables) {

@@ -52,7 +52,7 @@ public class Parser implements ParserConstants {
 
   static final public ASTNode SE() throws ParseException {
     ASTNode t1, t2;
-    t1 = Fact();
+    t1 = boolAdd();
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -65,7 +65,7 @@ public class Parser implements ParserConstants {
       }
       jj_consume_token(ASSIGN);
       t2 = boolAdd();
-                                            t1 = new ASTAssign(t1, t2);
+                                               t1 = new ASTAssign(t1, t2);
     }
       {if (true) return t1;}
     throw new Error("Missing return statement in function");
@@ -229,6 +229,7 @@ public class Parser implements ParserConstants {
   Token n;
   ASTNode t1, t2, t3 = null;
   List<Bind> variables = new ArrayList<Bind>();
+  boolean isLine = false;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Num:
       n = jj_consume_token(Num);
@@ -320,6 +321,20 @@ public class Parser implements ParserConstants {
       jj_consume_token(RBRACKET);
                                                                  t1 = new ASTWhile(t1, t2);
       break;
+    case PRINT:
+      jj_consume_token(PRINT);
+      t1 = boolAdd();
+                                 t1 = new ASTPrint(t1, false);
+      break;
+    case PRINTLINE:
+      jj_consume_token(PRINTLINE);
+      t1 = boolAdd();
+                                     t1 = new ASTPrint(t1, true);
+      break;
+    case STRING:
+      n = jj_consume_token(STRING);
+                       t1 = new ASTString(n.image);
+      break;
     default:
       jj_la1[12] = jj_gen;
       jj_consume_token(-1);
@@ -347,10 +362,10 @@ public class Parser implements ParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x10000000,0x0,0x4000,0x2000,0xf8000,0xf8000,0x300000,0x300000,0xc00000,0xc00000,0x20,0x40000000,0x41201fd0,};
+      jj_la1_0 = new int[] {0x80000000,0x0,0x20000,0x10000,0x7c0000,0x7c0000,0x1800000,0x1800000,0x6000000,0x6000000,0x80,0x0,0x900ff70,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,};
+      jj_la1_1 = new int[] {0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x12,};
    }
 
   /** Constructor with InputStream. */
@@ -488,7 +503,7 @@ public class Parser implements ParserConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[34];
+    boolean[] la1tokens = new boolean[37];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -505,7 +520,7 @@ public class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 34; i++) {
+    for (int i = 0; i < 37; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

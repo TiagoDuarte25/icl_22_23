@@ -6,7 +6,7 @@ public class VCell implements IValue{
         this.v = v;
     }
 
-    public IValue get() {
+    public IValue getVal() {
         return v;
     }
 

@@ -1,29 +1,45 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeRef;
+
 public class ASTAssign implements ASTNode {
 
-    ASTNode left, right;
+    private static final String OPERATOR = ":=";
 
-    public ASTAssign(ASTNode left, ASTNode right) {
-        this.left = left;
-        this.right = right;
+    ASTNode ref, expAssigned;
+
+    public ASTAssign(ASTNode ref, ASTNode expAssigned) {
+        this.ref = ref;
+        this.expAssigned = expAssigned;
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
-        IValue v1 = left.eval(env);
+    public IValue eval(Environment<IValue> env) {
+        IValue vId = ref.eval(env);
+        IValue vExp = expAssigned.eval(env);
 
-        if (v1 instanceof VCell) {
-            IValue v2 = right.eval(env);
-            ((VCell) v1).set(v2);
-            return v2;
-        }
+        ((VCell) vId).set(vExp);
 
-        throw new Exception("Illegal args to ':=' operator");
-
-
+        return vExp;
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType tRef = ref.typecheck(env);
+        IType tExp = expAssigned.typecheck(env);
+
+        if (tRef instanceof TypeRef) {
+            IType refType = ((TypeRef) tRef).getType();
+
+            if (tExp.equals(refType))
+                return refType;
+        }
+
+        throw new TypeError(OPERATOR);
     }
 }

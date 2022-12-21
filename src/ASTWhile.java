@@ -1,4 +1,10 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeBool;
+
 public class ASTWhile implements ASTNode {
+
+    private static final String OPERATOR = "while";
     private ASTNode condition, body;
 
     public ASTWhile(ASTNode condition, ASTNode body) {
@@ -7,23 +13,30 @@ public class ASTWhile implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         IValue condVal = condition.eval(env);
 
-        if (condVal instanceof VBool) {
-            IValue bodyVal = null;
-            while (((VBool) condVal).getVal()) {
-                bodyVal = body.eval(env);
-                condVal = condition.eval(env);
-            }
-            return bodyVal;
+        IValue bodyVal = null;
+        while (((VBool) condVal).getVal()) {
+            bodyVal = body.eval(env);
+            condVal = condition.eval(env);
         }
+        return bodyVal;
 
-        throw new Exception("Illegal args for 'while' operator");
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType condType = condition.typecheck(env);
+
+        if (condType instanceof TypeBool)
+            return body.typecheck(env);
+
+        throw new TypeError(OPERATOR);
     }
 }
