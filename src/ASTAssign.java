@@ -36,7 +36,7 @@ public class ASTAssign implements ASTNode {
         if (tRef instanceof TypeRef) {
             IType refType = ((TypeRef) tRef).getType();
 
-            if (tExp.equals(refType))
+            if (tExp.getClass().equals(refType.getClass()))
                 return refType;
         }
 

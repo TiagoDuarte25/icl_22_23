@@ -23,9 +23,8 @@ public class ASTIf implements ASTNode {
     @Override
     public IValue eval(Environment<IValue> env) {
         IValue cond = condition.eval(env);
-        IValue exp1 = this.exp1.eval(env);
         if (((VBool) cond).getVal())
-            return exp1;
+            return exp1.eval(env);
         else
             return exp2.eval(env);
     }
@@ -43,8 +42,7 @@ public class ASTIf implements ASTNode {
             IType exp1Type = exp1.typecheck(env);
             IType exp2Type = exp2.typecheck(env);
 
-            if (exp1Type.equals(exp2Type))
-                return exp1Type;
+            return conditionType;
         }
 
         throw new TypeError(OPERATOR);

@@ -32,7 +32,6 @@ public class ASTPlus implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
-        System.out.println("ENTRA TYPECHECK");
         IType tLeft = lhs.typecheck(env);
         IType tRight = rhs.typecheck(env);
 

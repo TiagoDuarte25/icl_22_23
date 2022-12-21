@@ -52,8 +52,8 @@ public class ASTCompare implements ASTNode {
         IType tLeft = lhs.typecheck(env);
         IType tRight = rhs.typecheck(env);
 
-        if ( ( tLeft instanceof TypeInt && tRight instanceof TypeInt ) || ( tLeft.equals(tRight) && op.equals("==") ) )
-            return tLeft;
+        if ( ( tLeft instanceof TypeInt && tRight instanceof TypeInt ) || ( tLeft instanceof TypeBool && tRight instanceof TypeBool && op.equals("==") ) )
+            return new TypeBool();
 
         throw new TypeError(op);
     }

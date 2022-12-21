@@ -18,9 +18,8 @@ public class ASTDef implements ASTNode {
         Environment<IType> envLocal = env.beginScope();
         for (Bind variable : variables) {
             IType varType = variable.getNode().typecheck(env);
-            env.assoc(variable.getId(), varType);
+            envLocal.assoc(variable.getId(), varType);
         }
-
 
         IType nodeType = node.typecheck(envLocal);
 
@@ -34,15 +33,11 @@ public class ASTDef implements ASTNode {
         Environment<IValue> env = e.beginScope();
 
         for (Bind variable : variables) {
-            e.assoc(variable.getId(), variable.getNode().eval(e));
+            env.assoc(variable.getId(), variable.getNode().eval(env));
         }
         IValue val;
-        if(node instanceof ASTDef){
-            val = node.eval(env);
-        }
-        else
-            val = node.eval(e);
 
+        val = node.eval(env);
 
         env.endScope();
         return val;

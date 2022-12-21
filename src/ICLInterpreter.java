@@ -7,6 +7,7 @@ public class ICLInterpreter {
 
     while (true) {
       try {
+        System.out.print("> ");
         exp = parser.Start();
         exp.typecheck(new Environment<>(null));
         exp.eval(new Environment<>(null));
