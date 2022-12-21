@@ -186,7 +186,7 @@ ASTNode Term() :
 ASTNode Fact() :
 { 
   Token n; 
-  ASTNode t1, t2;
+  ASTNode t1, t2, t3 = null;
   List<Bind> variables = new ArrayList<Bind>();
 }
 {
@@ -202,7 +202,7 @@ ASTNode Fact() :
         { t1 = new ASTDef(variables, t2); }
       | <NEW> t1 = boolAdd() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
-      | <IF> boolAdd() <LBRACKET>  <RBRACKET> (<LBRACKET>  <RBRACKET>)*
+      | <IF> t1 = boolAdd() <LBRACKET> t2=S() <RBRACKET> (<LBRACKET> t3=S() <RBRACKET>)? {t1 = new ASTIf(t1, t2, t3);}
     )
    { return t1; }
 }
