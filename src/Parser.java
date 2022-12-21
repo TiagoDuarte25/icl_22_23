@@ -268,9 +268,9 @@ public class Parser implements ParserConstants {
         jj_consume_token(LET);
         n = jj_consume_token(Id);
         jj_consume_token(EQUALS);
-        t1 = SE();
+        t1 = boolAdd();
         jj_consume_token(SEMICOLON);
-                                                                   variables.add(new Bind(n.image, t1));
+                                                                        variables.add(new Bind(n.image, t1));
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LET:
           ;
@@ -286,8 +286,8 @@ public class Parser implements ParserConstants {
       break;
     case NEW:
       jj_consume_token(NEW);
-      t1 = Fact();
-                           t1 = new ASTNew(t1);
+      t1 = boolAdd();
+                              t1 = new ASTNew(t1);
       break;
     case DEREF:
       jj_consume_token(DEREF);

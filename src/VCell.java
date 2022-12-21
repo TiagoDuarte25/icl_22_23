@@ -12,8 +12,4 @@ public class VCell implements IValue{
 
     void set(IValue	v0)	{v = v0;}
 
-    @Override
-    public String toString() {
-        return String.valueOf(v);
-    }
 }
