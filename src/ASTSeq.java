@@ -1,3 +1,6 @@
+import exceptions.TypeError;
+import types.IType;
+
 public class ASTSeq implements ASTNode {
 
     private ASTNode left, right;
@@ -8,7 +11,7 @@ public class ASTSeq implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         left.eval(env);
         return right.eval(env);
     }
@@ -16,5 +19,11 @@ public class ASTSeq implements ASTNode {
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        left.typecheck(env);
+        return right.typecheck(env);
     }
 }

@@ -1,21 +1,33 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeInt;
+
 public class ASTUMinus implements ASTNode {
 
-        ASTNode lhs;
-    
-        public IValue eval(Environment<IValue> e) throws Exception {
-            IValue val = lhs.eval(e);
-            if (val instanceof VInt)
-                return new VInt(-((VInt) val).getVal());
-            throw new Exception("Invalid type");
-        }
-        
-        public ASTUMinus(ASTNode lhs)
-        {
-	        this.lhs = lhs;
-        }
+    private static final String OPERATOR = "-";
 
-        @Override
-        public void compile(CodeBlock c, Environment<IValue> env) {
-                c.emit("ineg "+ lhs);
-        }
+    private ASTNode v;
+
+    public IValue eval(Environment<IValue> e) {
+        IValue val = v.eval(e);
+        return new VInt(-((VInt) val).getVal());
+    }
+
+    public ASTUMinus(ASTNode lhs)
+    {
+        this.v = lhs;
+    }
+
+    @Override
+    public void compile(CodeBlock c, Environment<IValue> env) {
+            c.emit("ineg "+ v);
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType vType = v.typecheck(env);
+        if (vType instanceof TypeInt)
+            return vType;
+        throw new TypeError(OPERATOR);
+    }
 }

@@ -1,4 +1,10 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeBool;
+
 public class ASTOr implements ASTNode {
+
+    private static final String OPERATOR = "||";
 
     private ASTNode lhs;
     private ASTNode rhs;
@@ -9,20 +15,26 @@ public class ASTOr implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         IValue v1 = lhs.eval(env);
+        IValue v2 = rhs.eval(env);
 
-        if (v1 instanceof VBool) {
-            IValue v2 = rhs.eval(env);
-            if (v2 instanceof VBool)
-                return new VBool(((VBool) v1).getVal() || ((VBool) v2).getVal());
-        }
-
-        throw new Exception("Invalid argument to '||' operator");
+        return new VBool(((VBool) v1).getVal() || ((VBool) v2).getVal());
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType tLeft = lhs.typecheck(env);
+        IType tRight = rhs.typecheck(env);
+
+        if (tLeft instanceof TypeBool && tRight instanceof TypeBool)
+            return tLeft;
+
+        throw new TypeError(OPERATOR);
     }
 }

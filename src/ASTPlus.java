@@ -1,15 +1,22 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeInt;
+import types.TypeString;
+
 public class ASTPlus implements ASTNode {
 
-ASTNode lhs, rhs;
+    private static final String OPERATOR = "+";
 
-    public IValue eval(Environment<IValue> e) throws Exception {
+    private ASTNode lhs, rhs;
+
+    public IValue eval(Environment<IValue> e){
         IValue v1 = lhs.eval(e);
-        if (v1 instanceof VInt) {
-            IValue v2 = rhs.eval(e);
-            if ( v2 instanceof VInt )
-                return new VInt(((VInt) v1).getVal() + ((VInt) v2).getVal());
-        }
-        throw new Exception("Illegal arguments to '+' operation");
+        IValue v2 = rhs.eval(e);
+
+        if (v1 instanceof VInt && v2 instanceof VInt)
+            return new VInt(((VInt) v1).getVal() + ((VInt) v2).getVal());
+
+        return new VString(((VString) v1).getVal() + ((VString) v2).getVal());
     }
 
     public ASTPlus(ASTNode l, ASTNode r) {
@@ -22,5 +29,18 @@ ASTNode lhs, rhs;
         rhs.compile(c, env);
         c.emit("iadd");
     }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType tLeft = lhs.typecheck(env);
+        IType tRight = rhs.typecheck(env);
+
+        if ( (tLeft instanceof TypeInt && tRight instanceof TypeInt ) ||
+                ( tLeft instanceof TypeString && tRight instanceof TypeString ) )
+            return tLeft;
+
+        throw new TypeError(OPERATOR);
+    }
+
 }
 

@@ -34,6 +34,12 @@ SKIP :
 
 TOKEN :
 {
+  < PRINTLINE: "println" >
+  |
+  < PRINT: "print" >
+  |
+  < WHILE: "while" >
+  |
   < LET: "let">
   |
   < Num: (["0"-"9"]) + >
@@ -43,6 +49,10 @@ TOKEN :
   < FALSE: "false" >
   |
   < NEW: "new">
+  |
+  < IF: "if" >
+  |
+  < STRING: "\""( ["a"-"z","A"-"Z","0"-"9"," ",".","!","?","@","#","$","%","^","&","*","(",")","-","_","+","="])+  "\"" >
   |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
@@ -89,12 +99,13 @@ TOKEN :
   < ASSIGN: ":=">
   |
   < DEREF: "!">
+
 }
 
 ASTNode Start():
 { ASTNode t; }
 {
-   t = S() <END><EL>
+   t = S() <END> <EL>
    { return t; }
 }
 
@@ -184,8 +195,9 @@ ASTNode Term() :
 ASTNode Fact() :
 { 
   Token n; 
-  ASTNode t1, t2;
+  ASTNode t1, t2, t3 = null;
   List<Bind> variables = new ArrayList<Bind>();
+  boolean isLine = false;
 }
 {
    (
@@ -200,6 +212,11 @@ ASTNode Fact() :
         { t1 = new ASTDef(variables, t2); }
       | <NEW> t1 = boolAdd() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
+      | <IF> t1 = boolAdd() <LBRACKET> t2=S() <RBRACKET> (<LBRACKET> t3=S() <RBRACKET>)? {t1 = new ASTIf(t1, t2, t3);}
+      | <WHILE> t1 = boolAdd() <LBRACKET> t2 = S() <RBRACKET>  { t1 = new ASTWhile(t1, t2); }
+      | <PRINT> t1 = boolAdd() { t1 = new ASTPrint(t1, false); }
+      | <PRINTLINE> t1 = boolAdd() { t1 = new ASTPrint(t1, true); }
+      | n = <STRING> { t1 = new ASTString(n.image); }
     )
    { return t1; }
 }

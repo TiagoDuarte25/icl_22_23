@@ -1,3 +1,8 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeBool;
+import types.TypeInt;
+
 public class ASTCompare implements ASTNode {
 
     private ASTNode lhs;
@@ -12,7 +17,7 @@ public class ASTCompare implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         IValue v1 = lhs.eval(env);
         IValue v2 = rhs.eval(env);
 
@@ -31,14 +36,25 @@ public class ASTCompare implements ASTNode {
                 default: break;
             }
         }
-        if (v1 instanceof VBool && v2 instanceof VBool && op.equals("=="))
-            return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
 
-        throw new Exception("Invalid arguments to '"+ op +"' operator");
+        // TODO - all types
+        return new VBool(((VBool) v1).getVal() == ((VBool) v2).getVal());
+
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+    }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType tLeft = lhs.typecheck(env);
+        IType tRight = rhs.typecheck(env);
+
+        if ( ( tLeft instanceof TypeInt && tRight instanceof TypeInt ) || ( tLeft instanceof TypeBool && tRight instanceof TypeBool && op.equals("==") ) )
+            return new TypeBool();
+
+        throw new TypeError(op);
     }
 }

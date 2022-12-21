@@ -9,9 +9,10 @@ public class ICLInterpreter {
       try {
         System.out.print("> ");
         exp = parser.Start();
-        System.out.println("RESULT: " +  exp.eval(new Environment<>(null)) );
+        exp.typecheck(new Environment<>(null));
+        exp.eval(new Environment<>(null));
       } catch (Exception e) {
-        System.out.println ("Syntax Error!");
+        System.out.println(e.getMessage());
         parser.ReInit(System.in);
       }
     }

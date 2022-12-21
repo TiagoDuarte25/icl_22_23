@@ -1,4 +1,10 @@
+import exceptions.TypeError;
+import types.IType;
+import types.TypeRef;
+
 public class ASTDeref implements ASTNode {
+
+    private static final String OPERATOR = "!";
 
     ASTNode exp;
 
@@ -7,18 +13,24 @@ public class ASTDeref implements ASTNode {
     }
 
     @Override
-    public IValue eval(Environment<IValue> env) throws Exception {
+    public IValue eval(Environment<IValue> env) {
         IValue v1 = exp.eval(env);
-        IValue res;
-        if(v1 instanceof VCell) {
-            res = ((VCell) v1).get();
-            return res;
-        }
-        throw new Exception("Illegal argument type to ! operator");
+        return ((VCell) v1).getVal();
     }
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
     }
+
+    @Override
+    public IType typecheck(Environment<IType> env) throws TypeError {
+        IType expType = exp.typecheck(env);
+
+        if (expType instanceof TypeRef)
+            return ((TypeRef) expType).getType();
+
+        throw new TypeError(OPERATOR);
+    }
+
 }
