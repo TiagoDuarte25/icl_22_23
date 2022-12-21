@@ -44,6 +44,8 @@ TOKEN :
   |
   < NEW: "new">
   |
+  < IF: "if" >
+  |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NOT: "~" >
@@ -200,6 +202,7 @@ ASTNode Fact() :
         { t1 = new ASTDef(variables, t2); }
       | <NEW> t1 = boolAdd() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
+      | <IF> boolAdd() <LBRACKET>  <RBRACKET> (<LBRACKET>  <RBRACKET>)*
     )
    { return t1; }
 }
