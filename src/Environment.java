@@ -12,7 +12,7 @@ public class Environment<T> {
     }
 
     public Environment<T> beginScope() {
-        return new Environment(this);
+        return new Environment<T>(this);
     }
 
     public Environment<T> endScope() {

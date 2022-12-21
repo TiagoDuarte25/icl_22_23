@@ -42,6 +42,8 @@ TOKEN :
   |
   < FALSE: "false" >
   |
+  < NEW: "new">
+  |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NOT: "~" >
@@ -81,12 +83,16 @@ TOKEN :
   < LBRACKET: "{">
   |
   < RBRACKET: "}">
+  |
+  < ASSIGN: ":=">
+  |
+  < DEREF: "!">
 }
 
 ASTNode Start():
 { ASTNode t; }
 {
-   t = boolAdd() <EL>
+   t = boolAdd() <SEMICOLON><SEMICOLON><EL>
    { return t; }
 }
 
@@ -169,8 +175,10 @@ ASTNode Fact() :
       | <LPAR> t1 = boolAdd() <RPAR>
       | <NOT> t1 = boolAdd() { t1 = new ASTNot(t1); }
       | <MINUS> t1=Fact() { t1 = new ASTUMinus(t1); }
-      | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = boolAdd() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = boolAdd() <RBRACKET><SEMICOLON><SEMICOLON>
+      | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = boolAdd() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = boolAdd() <RBRACKET>
         { t1 = new ASTDef(variables, t2); }
+      | <NEW> t1 = Fact() {t1 = new ASTNew(t1);}
+      | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
     )
    { return t1; }
 }
