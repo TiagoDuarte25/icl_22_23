@@ -1,14 +1,25 @@
 public class ASTAssign implements ASTNode {
 
-    ASTNode exp;
+    ASTNode left, right;
 
-    public ASTAssign(ASTNode exp) {
-        this.exp = exp;
+    public ASTAssign(ASTNode left, ASTNode right) {
+        this.left = left;
+        this.right = right;
     }
 
     @Override
     public IValue eval(Environment<IValue> env) throws Exception {
-        return null;
+        IValue v1 = left.eval(env);
+
+        if (v1 instanceof VCell) {
+            IValue v2 = right.eval(env);
+            ((VCell) v1).set(v2);
+            return v2;
+        }
+
+        throw new Exception("Illegal args to ':=' operator");
+
+
     }
 
     @Override

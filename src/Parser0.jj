@@ -80,6 +80,8 @@ TOKEN :
   |
   < SEMICOLON: ";">
   |
+  < END: ";;" >
+  |
   < LBRACKET: "{">
   |
   < RBRACKET: "}">
@@ -92,8 +94,27 @@ TOKEN :
 ASTNode Start():
 { ASTNode t; }
 {
-   t = boolAdd() <SEMICOLON><SEMICOLON><EL>
+   t = S() <END><EL>
    { return t; }
+}
+
+ASTNode S():
+{
+    ASTNode t1, t2;
+}
+{
+    t1 = SE() ( <SEMICOLON> t2 = SE() { t1 = new ASTSeq(t1, t2); } )*
+    { return t1; }
+}
+
+ASTNode SE():
+{
+    ASTNode t1, t2;
+}
+{
+    t1 = boolAdd() ( <ASSIGN> t2 = boolAdd() { t1 = new ASTAssign(t1, t2); } )*
+
+    { return t1; }
 }
 
 ASTNode boolAdd():
@@ -131,13 +152,13 @@ ASTNode Exp() :
 { Token op;
   ASTNode t1, t2; }
 {
-     t1=Term() ( ( op=<PLUS> | op=<MINUS>) t2=Term() 
-                 { System.out.println("ENTROU t1: " + t1.toString());
+     t1=Term() ( ( op=<PLUS> | op=<MINUS>) t2=Term()
+                 {
                    if (op.kind == PLUS)
                     t1 = new ASTPlus(t1,t2);
                    else {
-                    t1 = new ASTSub(t1,t2);}  
-                 } 
+                    t1 = new ASTSub(t1,t2);}
+                 }
                )*
      { return t1; } 
 }
@@ -175,7 +196,7 @@ ASTNode Fact() :
       | <LPAR> t1 = boolAdd() <RPAR>
       | <NOT> t1 = boolAdd() { t1 = new ASTNot(t1); }
       | <MINUS> t1=Fact() { t1 = new ASTUMinus(t1); }
-      | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = boolAdd() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = boolAdd() <RBRACKET>
+      | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = SE() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = S() <RBRACKET>
         { t1 = new ASTDef(variables, t2); }
       | <NEW> t1 = Fact() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}

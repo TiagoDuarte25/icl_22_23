@@ -11,7 +11,7 @@ public class ASTDeref implements ASTNode {
         IValue v1 = exp.eval(env);
         IValue res;
         if(v1 instanceof VCell) {
-            res = ((VCell) v1).getVal();
+            res = ((VCell) v1).get();
             return res;
         }
         throw new Exception("Illegal argument type to ! operator");
