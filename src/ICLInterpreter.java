@@ -1,0 +1,19 @@
+public class ICLInterpreter {
+    
+    /** Main entry point. */
+  public static void main(String args[]) {
+    Parser parser = new Parser(System.in);
+    ASTNode exp;
+
+    while (true) {
+      try {
+        System.out.print("> ");
+        exp = parser.Start();
+        System.out.println("RESULT: " +  exp.eval(new Environment<>(null)) );
+      } catch (Exception e) {
+        System.out.println ("Syntax Error!");
+        parser.ReInit(System.in);
+      }
+    }
+  }
+}
