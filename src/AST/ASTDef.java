@@ -22,16 +22,16 @@ public class ASTDef implements ASTNode {
     }
 
     @Override
-    public IType typecheck(Environment<IType> env) throws TypeError {
-        Environment<IType> envLocal = env.beginScope();
+    public IType typecheck(Environment<IType> e) throws TypeError {
+        Environment<IType> env = e.beginScope();
         for (Bind variable : variables) {
             IType varType = variable.getNode().typecheck(env);
-            envLocal.assoc(variable.getId(), varType);
+            env.assoc(variable.getId(), varType);
         }
 
-        IType nodeType = node.typecheck(envLocal);
+        IType nodeType = node.typecheck(env);
 
-        envLocal.endScope();
+        env.endScope();
 
         return nodeType;
     }

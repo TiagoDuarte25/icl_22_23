@@ -22,6 +22,8 @@ public class ASTNew implements ASTNode {
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
 
+        
+
     }
 
     @Override

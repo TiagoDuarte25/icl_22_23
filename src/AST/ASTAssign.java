@@ -37,11 +37,15 @@ public class ASTAssign implements ASTNode {
         IType tRef = ref.typecheck(env);
         IType tExp = expAssigned.typecheck(env);
 
+
         if (tRef instanceof TypeRef) {
             IType refType = ((TypeRef) tRef).getType();
 
-            if (tExp.getClass().equals(refType.getClass()))
+            /*if (tExp.equalsType(refType)) {
                 return refType;
+            }*/
+
+            return refType;
         }
 
         throw new TypeError(OPERATOR);
