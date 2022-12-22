@@ -16,17 +16,21 @@ public class ASTDef implements ASTNode {
     List<Bind> variables;
     ASTNode node;
 
+    IType[] types;
+
     public ASTDef(List<Bind> variables, ASTNode node) {
         this.variables = variables;
         this.node = node;
+        types = new IType[variables.size()];
     }
 
     @Override
     public IType typecheck(Environment<IType> e) throws TypeError {
         Environment<IType> env = e.beginScope();
-        for (Bind variable : variables) {
-            IType varType = variable.getNode().typecheck(env);
-            env.assoc(variable.getId(), varType);
+        for (int i = 0; i < variables.size(); i++) {
+            types[i] = variables.get(i).getNode().typecheck(env);
+            env.assoc(variables.get(i).getId(), types[i]);
+
         }
 
         IType nodeType = node.typecheck(env);
@@ -55,36 +59,30 @@ public class ASTDef implements ASTNode {
         Environment<IValue> env = e.beginScope();
 
         startFrame(c, env);
-
         for(int i = 0; i < variables.size(); i++) {
             c.emit("aload_3");
             String type = "";
-            IValue v = variables.get(i).getNode().eval(env);
-            if (v instanceof Coordinates)
-                type = ((Coordinates) v).type();
-            if (v instanceof VInt)
+            IType v = types[i];
+            if (v instanceof TypeInt)
                 type = "I";
-            if (v instanceof VString)
+            if (v instanceof TypeString)
                 type = "Ljava/lang/String;";
-            if (v instanceof VBool)
+            if (v instanceof TypeBool)
                 type = "Z";
-            if (v instanceof VCell) {
+            if (v instanceof TypeRef) {
                 type = "L";
-                IValue t = v;
-                while (t instanceof VCell) {
+                IType t = v;
+                while (t instanceof TypeRef) {
                     type += "ref_of_";
-                    t = ((VCell) t).getVal();
+                    t = ((TypeRef) t).getType();
                 }
-                if (t instanceof VInt)
+                if (t instanceof TypeInt)
                     type += "int;";
-                if (t instanceof VString)
+                if (t instanceof TypeString)
                     type += "string;";
-                if (t instanceof VBool)
+                if (t instanceof TypeBool)
                     type += "bool;";
             }
-
-
-
             env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i, type));
             variables.get(i).getNode().compile(c, env);
 

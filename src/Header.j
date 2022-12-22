@@ -33,39 +33,24 @@
 			putfield frame_0/sl Ljava/lang/Object;
 			astore_3
 			aload_3
-			new ref_of_ref_of_bool
-			dup
-			invokespecial ref_of_ref_of_bool/<init>()V
-			dup
-			new ref_of_bool
-			dup
-			invokespecial ref_of_bool/<init>()V
-			dup
-			iconst_1
-			putfield ref_of_bool/v Z
-			putfield ref_of_ref_of_bool/v Lref_of_bool;
-			putfield frame_0/v0 Lref_of_ref_of_bool;
+			sipush 1
+			putfield frame_0/v0 I
 			aload_3
-			iconst_1
-			putfield frame_0/v1 Z
-			getstatic java/lang/System/out Ljava/io/PrintStream;
-			iconst_1
 			
 			aload_3
 
-			getfield frame_0/v0 Lref_of_ref_of_bool;
+			getfield frame_0/v0 I
 
-			getfield ref_of_ref_of_bool/v Lref_of_bool;
-			getfield ref_of_bool/v Z
-			
-			aload_3
-
-			getfield frame_0/v1 Z
-
-			ior
-			ineg
+			sipush 1
 			iadd
-			invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;
+			putfield frame_0/v1 I
+			getstatic java/lang/System/out Ljava/io/PrintStream;
+			
+			aload_3
+
+			getfield frame_0/v1 I
+
+			invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
 			invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 			aload_3
 			getfield frame_0/sl Ljava/lang/Object;

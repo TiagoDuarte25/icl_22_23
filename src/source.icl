@@ -1,1 +1,1 @@
-{let x= new new true; let y = true; println ~!!x || y};;
+{let MAX = 10; let x = new MAX; let s = new 0; while !x>0 {s:=!s+!x; x:=!x-1}; println !s};;
