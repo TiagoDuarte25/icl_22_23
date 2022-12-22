@@ -1,6 +1,12 @@
 PARSER_BEGIN(Parser)
 
+import Environment.*;
 import java.util.*;
+import AST.ASTNode;
+import AST.*;
+import types.*;
+import values.*;
+import util.*;
 
 /** ID lister. */
 public class Parser {
@@ -20,7 +26,6 @@ public class Parser {
         }
     }
   }
-
 }
 
 PARSER_END(Parser)

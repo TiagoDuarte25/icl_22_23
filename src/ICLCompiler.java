@@ -1,4 +1,9 @@
 import java.io.*;
+import AST.*;
+import types.IType;
+import util.*;
+import values.IValue;
+import Environment.*;
 
 public class ICLCompiler {
     public static void main(String	args[]) {	
@@ -11,14 +16,14 @@ public class ICLCompiler {
         }
         Parser parser = new Parser(in);	
         CodeBlock code = new CodeBlock();
-        File header = new File("../Header.j");
         try	{
-            ASTNode	ast	= parser.Start();
+            ASTNode ast	= parser.Start();
+            ast.typecheck(new Environment<IType>(null));
             ast.compile(code, new Environment<IValue>(null));
             FileOutputStream output = new FileOutputStream("Header.j");
             code.dump(new PrintStream(output));
         } catch	(Exception	e)	{	
-            System.out.println	("Syntax	Error!");
+            System.out.println	("Syntax Error!");
             System.out.println(e.getMessage());	
             parser.ReInit(System.in);	
         }	

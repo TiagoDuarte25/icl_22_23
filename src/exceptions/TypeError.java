@@ -1,5 +1,4 @@
 package exceptions;
-
 public class TypeError extends Exception {
 
     public TypeError(String op) {

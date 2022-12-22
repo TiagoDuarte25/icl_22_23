@@ -1,3 +1,8 @@
+import AST.ASTNode;
+import Environment.Environment;
+import types.IType;
+import values.IValue;
+
 public class ICLInterpreter {
     
     /** Main entry point. */
@@ -9,8 +14,8 @@ public class ICLInterpreter {
       try {
         System.out.print("> ");
         exp = parser.Start();
-        exp.typecheck(new Environment<>(null));
-        exp.eval(new Environment<>(null));
+        exp.typecheck(new Environment<IType>(null));
+        exp.eval(new Environment<IValue>(null));
       } catch (Exception e) {
         System.out.println(e.getMessage());
         parser.ReInit(System.in);
