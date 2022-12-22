@@ -64,10 +64,13 @@ public class CodeBlock	{
 
     public void dumpFrames(PrintStream f) {
 
+        System.out.println("INIT SIZE: " + init[0]);
+
         for(int i = 0; init[i] != null; i++) {
             f.println(init[i]);
         }
 
         init = new String[10000];
+        pi = 0;
     }
 }

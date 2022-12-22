@@ -29,25 +29,19 @@ public class ASTId implements ASTNode{
     public void compile(CodeBlock c, Environment<IValue> env) {
         int idFrame = env.depth() - 1;
         Coordinates coord;
-        IValue v;
         try {
-            v = env.find(id);
             coord = (Coordinates) env.find(id);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        int level_shift = idFrame - coord.envDepth();
-        String frames = "";
+        int level_shift = idFrame - coord.envDepth()+1;
+        StringBuilder frames = new StringBuilder();
         for(int i = 0; i < level_shift; i++) {
-            frames += String.format(GET_FIELD_FRAME, idFrame - i, idFrame - (i+1));
+            frames.append(String.format(GET_FIELD_FRAME, idFrame - i, idFrame - (i + 1)));
         }
-        String type = "boas";
-        if (v instanceof VInt)
-            type = "I";
-        else if (v instanceof VString)
-            type = "Ljava/lang/String;";
-        frames += String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), type);
-        String res = String.format(EMIT, frames);
+
+        frames.append(String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), coord.type()));
+        String res = String.format(EMIT, frames.toString());
         c.emit(res);
 
     }

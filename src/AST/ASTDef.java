@@ -59,13 +59,15 @@ public class ASTDef implements ASTNode {
         c.emit("aload_3");
 
         for(int i = 0; i < variables.size(); i++) {
-            env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i));
-            variables.get(i).getNode().compile(c, env);
             String type = "";
-            if (variables.get(i).getNode().eval(env) instanceof VInt)
+            IValue v = variables.get(i).getNode().eval(env);
+            if (v instanceof VInt)
                 type = "I";
-            else if (variables.get(i).getNode().eval(env) instanceof VString)
+            else if (v instanceof VString)
                 type = "Ljava/lang/String;";
+            env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i, type));
+            variables.get(i).getNode().compile(c, env);
+
             c.emit(String.format("putfield frame_%d/v%d %s", env.depth()-1, i, type));
         }
 
@@ -73,14 +75,13 @@ public class ASTDef implements ASTNode {
 
         endFrame(c, env);
 
+        createFrameFile(c, env);
+
         env.endScope();
     }
 
     private void startFrame(CodeBlock c, Environment<IValue> env) {
         int frameId = env.depth()-1;
-
-        c.emitI(String.format("\n.class public frame_%d", frameId));
-        c.emitI(".super java/lang/Object");
 
         if(frameId == 0) {
             c.emit("aconst_null");
@@ -91,30 +92,12 @@ public class ASTDef implements ASTNode {
         c.emit(String.format("invokespecial frame_%d/<init>()V", frameId));
         c.emit("dup");
         c.emit("aload_3");
-        if (frameId == 0) {
+        if (frameId == 0)
             c.emit(String.format("putfield frame_%d/sl Ljava/lang/Object;", frameId));
-            c.emitI(".field public sl Ljava/lang/Object;");
-        } else {
+        else
             c.emit(String.format("putfield frame_%d/sl Lframe_%d;", frameId, frameId - 1));
-            c.emitI(String.format(".field public sl Lframe_%d;", frameId-1));
-        }
         c.emit("astore_3");
-        for(int i = 0; i < variables.size(); i++) {
-            String type = "";
-            if (variables.get(i).getNode().eval(env) instanceof VInt)
-                type = "I";
-            else if (variables.get(i).getNode().eval(env) instanceof VString)
-                type = "Ljava/lang/String";
-            c.emitI(String.format(".field public v%d %s", i, type));
-        }
 
-        c.emitI("\n.method public <init>()V");
-        c.emitI("\taload_0");
-        c.emitI("\tinvokenonvirtual java/lang/Object/<init>()V");
-        c.emitI("\treturn");
-        c.emitI(".end method");
-
-        createFrameFile(c, frameId);
     }
 
     private void endFrame(CodeBlock c, Environment<IValue> env) {
@@ -128,13 +111,38 @@ public class ASTDef implements ASTNode {
 
     }
 
-    private void createFrameFile(CodeBlock code, int frameId) {
+    private void createFrameFile(CodeBlock c, Environment<IValue> env) {
+        int frameId = env.depth()-1;
+
+        c.emitI(String.format("\n.class public frame_%d", frameId));
+        c.emitI(".super java/lang/Object");
+        if (frameId == 0)
+            c.emitI(".field public sl Ljava/lang/Object;");
+        else
+            c.emitI(String.format(".field public sl Lframe_%d;", frameId-1));
+
+        for(int i = 0; i < variables.size(); i++) {
+            try {
+                String type = ((Coordinates) env.find(variables.get(i).getId())).type();
+                c.emitI(String.format(".field public v%d %s", i, type));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        c.emitI("\n.method public <init>()V");
+        c.emitI("\taload_0");
+        c.emitI("\tinvokenonvirtual java/lang/Object/<init>()V");
+        c.emitI("\treturn");
+        c.emitI(".end method");
+
+
         FileOutputStream output = null;
         try {
             output = new FileOutputStream(String.format("frame_%d.j", frameId));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        code.dumpFrames(new PrintStream(output));
+        c.dumpFrames(new PrintStream(output));
     }
 }

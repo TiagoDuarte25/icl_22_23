@@ -32,7 +32,7 @@ public class ASTPrint implements ASTNode {
 
         body.compile(c, env);
 
-        if (body.eval(env) instanceof VInt)
+        if ( body.eval(env) instanceof VInt)
             c.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
 
         if (isLine)
