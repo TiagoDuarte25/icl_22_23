@@ -1,2 +1,4 @@
 *.class
 /out/
+/src/compiled_classes/
+/src/*.bat
