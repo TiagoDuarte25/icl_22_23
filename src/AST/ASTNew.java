@@ -5,6 +5,11 @@ import types.*;
 import util.*;
 import values.*;
 import Environment.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
 public class ASTNew implements ASTNode {
 
     ASTNode expr;
@@ -23,27 +28,37 @@ public class ASTNew implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-        c.emitI(String.format("\n.class public ref_of_%s", getType(this.type)));
-        c.emitI(".super java/lang/Object");
+        String type = getType(this.type);
+        String typeJ = getJVMType(this.type);
+        c.emitRef(String.format(".class public ref_of_%s", type));
+        c.emitRef(".super java/lang/Object");
+        c.emitRef(String.format(".field public v %s", typeJ));
+        c.emitRef("\n.method public <init>()V");
+        c.emitRef("\taload_0");
+        c.emitRef("\tinvokenonvirtual java/lang/Object/<init>()V");
+        c.emitRef("\treturn");
+        c.emitRef(".end method");
 
-        c.emitI(String.format(".field public v %s", getJVMType(this.type)));
-        c.emitI("\n.method public <init>()V");
-        c.emitI("\taload_0");
-        c.emitI("\tinvokenonvirtual java/lang/Object/<init>()V");
-        c.emitI("\treturn");
-        c.emitI(".end method");
 
+        FileOutputStream output = null;
+        try {
+            output = new FileOutputStream(String.format("ref_of_%s.j", type));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        c.dumpRefs(new PrintStream(output));
+
+        compileToHeader(c, env, type, typeJ);
     }
 
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
         type = expr.typecheck(env);
-        System.out.println("TYPE IN TYPECHK: " + type);
         return new TypeRef(type);
     }
 
     private String getType(IType type) {
-        StringBuilder typeName = new StringBuilder();
+        String typeName = "";
         if (type instanceof TypeInt)
             return "int";
         if (type instanceof TypeBool)
@@ -53,18 +68,17 @@ public class ASTNew implements ASTNode {
         if (type instanceof TypeRef) {
             IType i = type;
             while (i instanceof TypeRef) {
-                typeName.append("ref_of_");
-                i = ((TypeRef) type).getType();
+                typeName += "ref_of_";
+                i = ((TypeRef) i).getType();
             }
-            i = ((TypeRef) type).getType();
-            typeName.append(getType(i));
-            return typeName.toString();
+            typeName += getType(i);
+            return typeName;
         }
         return "";
     }
 
     private String getJVMType(IType type) {
-        StringBuilder typeName = new StringBuilder();
+        String typeName = "";
         if (type instanceof TypeInt)
             return "I";
         if (type instanceof TypeBool)
@@ -73,14 +87,24 @@ public class ASTNew implements ASTNode {
             return "Ljava/lang/String;";
         if (type instanceof TypeRef) {
             IType i = type;
+            typeName += "L";
             while (i instanceof TypeRef) {
-                typeName.append("ref_of_");
-                i = ((TypeRef) type).getType();
+                typeName += "ref_of_";
+                i = ((TypeRef) i).getType();
             }
-            i = ((TypeRef) type).getType();
-            typeName.append(getJVMType(i));
-            return typeName.toString();
+            typeName += getType(i);
+            typeName += ";";
+            return typeName;
         }
         return "";
+    }
+
+    private void compileToHeader(CodeBlock c, Environment<IValue> env, String className, String typeName) {
+        c.emit(String.format("new ref_of_%s", className));
+        c.emit("dup");
+        c.emit(String.format("invokespecial ref_of_%s/<init>()V", className));
+        c.emit("dup");
+        expr.compile(c, env);
+        c.emit(String.format("putfield ref_of_%s/v %s", className, typeName));
     }
 }

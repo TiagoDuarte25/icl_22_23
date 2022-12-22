@@ -1,1 +1,1 @@
-{let x= new new 5; println x};;
+{let x= new new true; let y = true; println ~!!x || y};;

@@ -68,6 +68,21 @@ public class ASTDef implements ASTNode {
                 type = "Ljava/lang/String;";
             if (v instanceof VBool)
                 type = "Z";
+            if (v instanceof VCell) {
+                type = "L";
+                IValue t = v;
+                while (t instanceof VCell) {
+                    type += "ref_of_";
+                    t = ((VCell) t).getVal();
+                }
+                if (t instanceof VInt)
+                    type += "int;";
+                if (t instanceof VString)
+                    type += "string;";
+                if (t instanceof VBool)
+                    type += "bool;";
+            }
+
 
 
             env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i, type));

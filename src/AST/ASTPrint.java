@@ -38,13 +38,13 @@ public class ASTPrint implements ASTNode {
             c.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
         if (type instanceof TypeBool)
             c.emit("invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;");
-
+        if (type instanceof TypeRef)
+            c.emit("invokestatic java/lang/String/valueOf(Ljava/lang/Object;)Ljava/lang/String;");
         if (isLine)
             c.emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
         else
             c.emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
     }
-
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
         type = body.typecheck(env);
