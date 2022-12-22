@@ -33,76 +33,25 @@
 			putfield frame_0/sl Ljava/lang/Object;
 			astore_3
 			aload_3
-			iconst_1
-			putfield frame_0/v0 Z
-			
-			new frame_1
-			dup
-			invokespecial frame_1/<init>()V
-			dup
-			aload_3
-			putfield frame_1/sl Lframe_0;
-			astore_3
+			sipush 1
+			putfield frame_0/v0 I
 			aload_3
 			
 			aload_3
-			getfield frame_1/sl Lframe_0;
-			getfield frame_0/v0 Z
 
-			putfield frame_1/v0 Z
-			
-			new frame_2
-			dup
-			invokespecial frame_2/<init>()V
-			dup
-			aload_3
-			putfield frame_2/sl Lframe_1;
-			astore_3
-			aload_3
-			sipush 2
-			sipush 2
-			isub
-			ifgt L1
-			iconst_0
-			goto L2
-			L1:
-			iconst_1
-			L2:
-			putfield frame_2/v0 Z
+			getfield frame_0/v0 I
+
+			sipush 1
+			iadd
+			putfield frame_0/v1 I
 			getstatic java/lang/System/out Ljava/io/PrintStream;
-			sipush 3
+			
+			aload_3
+
+			getfield frame_0/v1 I
+
 			invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
 			invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-			getstatic java/lang/System/out Ljava/io/PrintStream;
-			
-			aload_3
-
-			getfield frame_2/v0 Z
-
-			invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;
-			invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-			aload_3
-			getfield frame_2/sl Lframe_1;
-			astore_3
-			getstatic java/lang/System/out Ljava/io/PrintStream;
-			
-			aload_3
-
-			getfield frame_1/v0 Z
-
-			invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;
-			invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-			aload_3
-			getfield frame_1/sl Lframe_0;
-			astore_3
-			getstatic java/lang/System/out Ljava/io/PrintStream;
-			
-			aload_3
-
-			getfield frame_0/v0 Z
-
-			invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;
-			invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
 			aload_3
 			getfield frame_0/sl Ljava/lang/Object;
 			astore_3

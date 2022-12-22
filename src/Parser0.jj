@@ -214,7 +214,7 @@ ASTNode Fact() :
       | <NOT> t1 = boolAdd() { t1 = new ASTNot(t1); }
       | <MINUS> t1=Fact() { t1 = new ASTUMinus(t1); }
       | <LBRACKET> (<LET> n = <Id> <EQUALS> t1 = boolAdd() <SEMICOLON> {variables.add(new Bind(n.image, t1));})+ t2 = S() <RBRACKET>
-        { t1 = new ASTDef(variables, t2); }
+        {t1 = new ASTDef(variables, t2);}
       | <NEW> t1 = boolAdd() {t1 = new ASTNew(t1);}
       | <DEREF> t1 = Fact() {t1 = new ASTDeref(t1);}
       | <IF> t1 = boolAdd() <LBRACKET> t2=S() <RBRACKET> (<LBRACKET> t3=S() <RBRACKET>)? {t1 = new ASTIf(t1, t2, t3);}

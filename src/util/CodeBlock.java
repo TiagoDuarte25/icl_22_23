@@ -4,7 +4,8 @@ import java.io.*;
 public class CodeBlock	{
     String	code[];
     String init[];
-    int	pc, pi;
+    String initRef[];
+    int	pc, pi, pr;
 
     private static final String COMPILE_START = ".class public Header\n"
     + ".super java/lang/Object\n"
@@ -39,8 +40,10 @@ public class CodeBlock	{
     public CodeBlock () {
         code = new String[10000];
         init = new String[10000];
+        initRef = new String[10000];
         pc = 0;
         pi = 0;
+        pr = 0;
     }
     
     public void emit(String opcode){
@@ -48,6 +51,7 @@ public class CodeBlock	{
     }
 
     public void emitI(String opcode) {init[pi++] = opcode;}
+    public void emitRef(String opcode) {initRef[pr++] = opcode;}
 
     public void dump(PrintStream f)	{ //	dumps	code	to	f
 
@@ -70,5 +74,15 @@ public class CodeBlock	{
 
         init = new String[10000];
         pi = 0;
+    }
+
+    public void dumpRefs(PrintStream f) {
+
+        for(int i = 0; initRef[i] != null; i++) {
+            f.println(initRef[i]);
+        }
+
+        initRef = new String[10000];
+        pr = 0;
     }
 }

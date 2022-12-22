@@ -1,8 +1,6 @@
-
-.class public frame_2
+.class public ref_of_int
 .super java/lang/Object
-.field public sl Lframe_1;
-.field public v0 Z
+.field public v I
 
 .method public <init>()V
 	aload_0

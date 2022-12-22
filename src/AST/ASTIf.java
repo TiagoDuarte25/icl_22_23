@@ -52,9 +52,12 @@ public class ASTIf implements ASTNode {
 
         if (conditionType instanceof TypeBool) {
             IType exp1Type = exp1.typecheck(env);
-            IType exp2Type = exp2.typecheck(env);
-
-            return conditionType;
+            if(exp2 != null) {
+                IType exp2Type = exp2.typecheck(env);
+                if (exp1Type.equalsType(exp2Type))
+                    return exp1Type;
+            } else
+                return exp1Type;
         }
 
         throw new TypeError(OPERATOR);

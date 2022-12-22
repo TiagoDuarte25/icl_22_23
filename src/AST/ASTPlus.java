@@ -17,10 +17,7 @@ public class ASTPlus implements ASTNode {
 
         if (v1 instanceof VInt && v2 instanceof VInt)
             return new VInt(((VInt) v1).getVal() + ((VInt) v2).getVal());
-
-        assert v1 instanceof VString;
         return new VString(((VString) v1).getVal() + ((VString) v2).getVal());
-
     }
 
     public ASTPlus(ASTNode l, ASTNode r) {
@@ -33,7 +30,6 @@ public class ASTPlus implements ASTNode {
         rhs.compile(c, env);
         IValue v1 = lhs.eval(env);
         IValue v2 = rhs.eval(env);
-
         if (v1 instanceof Coordinates) {
             if (((Coordinates) v1).type().equals("I"))
                 c.emit("iadd");
