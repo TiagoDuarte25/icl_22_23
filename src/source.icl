@@ -1,1 +1,1 @@
-~true;;
+println 3+4;;
