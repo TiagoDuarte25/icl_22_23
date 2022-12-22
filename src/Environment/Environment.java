@@ -23,7 +23,7 @@ public class Environment<T> {
 
     public int depth() {
         if (previousEnv == null)
-            return 1;
+            return 0;
         return previousEnv.depth() + 1;
     }
 

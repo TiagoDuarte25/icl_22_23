@@ -26,10 +26,6 @@ public class CodeBlock	{
     + "\n"
     + "       ; setup local variables:\n"
     + "\n"
-    + "       ;    1 - the PrintStream object held in java.lang.System.out\n"
-    + "\n"
-    + "       getstatic java/lang/System/out Ljava/io/PrintStream;\n"
-    + "\n"
     + "       ; place bytecodes here\n"
     + "\n"
     + "       ; START = \n";
@@ -57,17 +53,22 @@ public class CodeBlock	{
 
         f.print(COMPILE_START);
 
-        for(int i = 0; init[i] != null; i++) {
-            f.println(init[i]);
-        }
-
         f.println(START);
-
 
         for(int i = 0; code[i] != null; i++) {
             f.println("\t\t\t" + code[i]);
         }
 
         f.print(COMPILE_END);
-    }	
+    }
+
+    public void dumpFrames(PrintStream f) {
+
+        for(int i = 0; init[i] != null; i++) {
+            f.println(init[i]);
+        }
+
+        init = new String[10000];
+        pi = 0;
+    }
 }
