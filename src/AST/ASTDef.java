@@ -56,15 +56,20 @@ public class ASTDef implements ASTNode {
 
         startFrame(c, env);
 
-        c.emit("aload_3");
-
         for(int i = 0; i < variables.size(); i++) {
+            c.emit("aload_3");
             String type = "";
             IValue v = variables.get(i).getNode().eval(env);
+            if (v instanceof Coordinates)
+                type = ((Coordinates) v).type();
             if (v instanceof VInt)
                 type = "I";
-            else if (v instanceof VString)
+            if (v instanceof VString)
                 type = "Ljava/lang/String;";
+            if (v instanceof VBool)
+                type = "Z";
+
+
             env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i, type));
             variables.get(i).getNode().compile(c, env);
 

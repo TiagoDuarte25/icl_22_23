@@ -15,15 +15,6 @@ public class ASTPlus implements ASTNode {
         IValue v1 = lhs.eval(e);
         IValue v2 = rhs.eval(e);
 
-        System.out.println(v1.getClass());
-
-        if (v1 instanceof Coordinates && v2 instanceof Coordinates) {
-            if (((Coordinates) v1).type().equals("I"))
-                return new VInt(-1);
-            return new VString("");
-
-        }
-
         if (v1 instanceof VInt && v2 instanceof VInt)
             return new VInt(((VInt) v1).getVal() + ((VInt) v2).getVal());
 

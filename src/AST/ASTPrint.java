@@ -9,6 +9,8 @@ public class ASTPrint implements ASTNode {
     private ASTNode body;
     private boolean isLine;
 
+    private IType type;
+
     public ASTPrint(ASTNode body, boolean isLine) {
         this.body = body;
         this.isLine = isLine;
@@ -32,18 +34,20 @@ public class ASTPrint implements ASTNode {
 
         body.compile(c, env);
 
-        if ( body.eval(env) instanceof VInt)
+        if (type instanceof TypeInt)
             c.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;");
+        if (type instanceof TypeBool)
+            c.emit("invokestatic java/lang/String/valueOf(Z)Ljava/lang/String;");
 
         if (isLine)
             c.emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
         else
             c.emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
-
     }
 
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
-        return body.typecheck(env);
+        type = body.typecheck(env);
+        return type;
     }
 }

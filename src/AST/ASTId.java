@@ -41,7 +41,7 @@ public class ASTId implements ASTNode{
         }
 
         frames.append(String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), coord.type()));
-        String res = String.format(EMIT, frames.toString());
+        String res = String.format(EMIT, frames);
         c.emit(res);
 
     }
