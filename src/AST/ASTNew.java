@@ -23,24 +23,10 @@ public class ASTNew implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-
-        String typeName = getType(this.type);
-        if (type instanceof TypeRef) {
-            IType i = ((TypeRef) type).getType();
-            while (i instanceof TypeRef) {
-                typeName += "ref_of_";
-                i = ((TypeRef) type).getType();
-            }
-            i = ((TypeRef) type).getType();
-            typeName += getType(i);
-        }
-
-        c.emitI(String.format("\n.class public ref_of_%s", typeName));
+        c.emitI(String.format("\n.class public ref_of_%s", getType(this.type)));
         c.emitI(".super java/lang/Object");
 
-        String typeJ = "";
-        
-            c.emitI(String.format(".field public v %s"));
+        c.emitI(String.format(".field public v %s", getJVMType(this.type)));
         c.emitI("\n.method public <init>()V");
         c.emitI("\taload_0");
         c.emitI("\tinvokenonvirtual java/lang/Object/<init>()V");
@@ -51,17 +37,50 @@ public class ASTNew implements ASTNode {
 
     @Override
     public IType typecheck(Environment<IType> env) throws TypeError {
-         type = expr.typecheck(env);
+        type = expr.typecheck(env);
+        System.out.println("TYPE IN TYPECHK: " + type);
         return new TypeRef(type);
     }
 
     private String getType(IType type) {
+        StringBuilder typeName = new StringBuilder();
         if (type instanceof TypeInt)
             return "int";
         if (type instanceof TypeBool)
             return "bool";
         if (type instanceof TypeString)
-            return"string";
+            return "string";
+        if (type instanceof TypeRef) {
+            IType i = type;
+            while (i instanceof TypeRef) {
+                typeName.append("ref_of_");
+                i = ((TypeRef) type).getType();
+            }
+            i = ((TypeRef) type).getType();
+            typeName.append(getType(i));
+            return typeName.toString();
+        }
+        return "";
+    }
+
+    private String getJVMType(IType type) {
+        StringBuilder typeName = new StringBuilder();
+        if (type instanceof TypeInt)
+            return "I";
+        if (type instanceof TypeBool)
+            return "Z";
+        if (type instanceof TypeString)
+            return "Ljava/lang/String;";
+        if (type instanceof TypeRef) {
+            IType i = type;
+            while (i instanceof TypeRef) {
+                typeName.append("ref_of_");
+                i = ((TypeRef) type).getType();
+            }
+            i = ((TypeRef) type).getType();
+            typeName.append(getJVMType(i));
+            return typeName.toString();
+        }
         return "";
     }
 }
