@@ -1,1 +1,1 @@
-println 3+4;;
+{let x = "ola"; println x};;

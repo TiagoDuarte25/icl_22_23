@@ -6,6 +6,9 @@ import util.*;
 import values.*;
 import Environment.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 public class ASTDef implements ASTNode {
@@ -51,22 +54,24 @@ public class ASTDef implements ASTNode {
     public void compile(CodeBlock c, Environment<IValue> e) {
         Environment<IValue> env = e.beginScope();
 
-        startFrame(c, e);
+        startFrame(c, env);
 
         c.emit("aload_3");
 
         for(int i = 0; i < variables.size(); i++) {
-            e.assoc(variables.get(i).getId(), new Coordinates(e.depth()-1, "v"+ i));
-            variables.get(i).getNode().compile(c, e);
-            c.emit(String.format("putfield frame_%d/v%d I", e.depth()-1, i));
+            env.assoc(variables.get(i).getId(), new Coordinates(env.depth(), "v"+ i));
+            variables.get(i).getNode().compile(c, env);
+            String type = "";
+            if (variables.get(i).getNode().eval(env) instanceof VInt)
+                type = "I";
+            else if (variables.get(i).getNode().eval(env) instanceof VString)
+                type = "Ljava/lang/String;";
+            c.emit(String.format("putfield frame_%d/v%d %s", env.depth()-1, i, type));
         }
 
-        if(node instanceof ASTDef)
-           node.compile(c, env);
-        else
-            node.compile(c, e);
+        node.compile(c, env);
 
-        endFrame(c, e);
+        endFrame(c, env);
 
         env.endScope();
     }
@@ -77,6 +82,10 @@ public class ASTDef implements ASTNode {
         c.emitI(String.format("\n.class public frame_%d", frameId));
         c.emitI(".super java/lang/Object");
 
+        if(frameId == 0) {
+            c.emit("aconst_null");
+            c.emit("astore_3");
+        }
         c.emit(String.format("\n\t\t\tnew frame_%d",frameId));
         c.emit("dup");
         c.emit(String.format("invokespecial frame_%d/<init>()V", frameId));
@@ -90,14 +99,22 @@ public class ASTDef implements ASTNode {
             c.emitI(String.format(".field public sl Lframe_%d;", frameId-1));
         }
         c.emit("astore_3");
-        for(int i = 0; i < variables.size(); i++)
-            c.emitI(String.format(".field public v%d I", i));
+        for(int i = 0; i < variables.size(); i++) {
+            String type = "";
+            if (variables.get(i).getNode().eval(env) instanceof VInt)
+                type = "I";
+            else if (variables.get(i).getNode().eval(env) instanceof VString)
+                type = "Ljava/lang/String";
+            c.emitI(String.format(".field public v%d %s", i, type));
+        }
 
-        c.emitI(".method public <init>()V");
-        c.emitI("aload_0");
-        c.emitI("invokenonvirtual java/lang/Object/<init>()V");
-        c.emitI("return");
+        c.emitI("\n.method public <init>()V");
+        c.emitI("\taload_0");
+        c.emitI("\tinvokenonvirtual java/lang/Object/<init>()V");
+        c.emitI("\treturn");
         c.emitI(".end method");
+
+        createFrameFile(c, frameId);
     }
 
     private void endFrame(CodeBlock c, Environment<IValue> env) {
@@ -108,5 +125,16 @@ public class ASTDef implements ASTNode {
         else
             c.emit(String.format("getfield frame_%d/sl Lframe_%d;", frameId, frameId - 1));
         c.emit("astore_3");
+
+    }
+
+    private void createFrameFile(CodeBlock code, int frameId) {
+        FileOutputStream output = null;
+        try {
+            output = new FileOutputStream(String.format("frame_%d.j", frameId));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        code.dumpFrames(new PrintStream(output));
     }
 }

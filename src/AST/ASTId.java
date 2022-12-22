@@ -28,8 +28,10 @@ public class ASTId implements ASTNode{
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
         int idFrame = env.depth() - 1;
-        Coordinates coord ;
+        Coordinates coord;
+        IValue v;
         try {
+            v = env.find(id);
             coord = (Coordinates) env.find(id);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -39,7 +41,12 @@ public class ASTId implements ASTNode{
         for(int i = 0; i < level_shift; i++) {
             frames += String.format(GET_FIELD_FRAME, idFrame - i, idFrame - (i+1));
         }
-        frames += String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), "I");
+        String type = "boas";
+        if (v instanceof VInt)
+            type = "I";
+        else if (v instanceof VString)
+            type = "Ljava/lang/String;";
+        frames += String.format("\n\t\t\tgetfield frame_%d/%s %s\n", (idFrame - level_shift), coord.varId(), type);
         String res = String.format(EMIT, frames);
         c.emit(res);
 

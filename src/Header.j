@@ -18,20 +18,33 @@
 
        ; setup local variables:
 
-       ;    1 - the PrintStream object held in java.lang.System.out
-
-       getstatic java/lang/System/out Ljava/io/PrintStream;
-
        ; place bytecodes here
 
        ; START = 
 
+			aconst_null
+			astore_3
+			
+			new frame_0
+			dup
+			invokespecial frame_0/<init>()V
+			dup
+			aload_3
+			putfield frame_0/sl Ljava/lang/Object;
+			astore_3
+			aload_3
+			ldc "ola"
+			putfield frame_0/v0 Ljava/lang/String;
 			getstatic java/lang/System/out Ljava/io/PrintStream;
-			sipush 3
-			sipush 4
-			iadd
-			invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
+			
+			aload_3
+
+			getfield frame_0/v0 boas
+
 			invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+			aload_3
+			getfield frame_0/sl Ljava/lang/Object;
+			astore_3
        ; END 
 
        return
