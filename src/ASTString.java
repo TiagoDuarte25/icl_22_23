@@ -19,7 +19,7 @@ public class ASTString implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-
+        c.emit("ldc \"" + text + "\"");
     }
 
     @Override

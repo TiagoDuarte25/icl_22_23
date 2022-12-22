@@ -23,6 +23,14 @@ public class ASTPrint implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
+        body.compile(c, env);
+
+        c.emit("invokestatic java/lang/String/valueOf(I)Ljava/lang/String;\n");
+
+        if (isLine)
+            c.emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n");
+        else
+            c.emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V\n");
 
     }
 

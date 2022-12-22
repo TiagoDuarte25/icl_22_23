@@ -1,6 +1,7 @@
 import exceptions.TypeError;
 import types.IType;
 import types.TypeBool;
+import util.Labels;
 
 public class ASTWhile implements ASTNode {
 
@@ -27,7 +28,20 @@ public class ASTWhile implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
+        Labels labels = Labels.getInstance();
 
+        int l1 = labels.getNewLabel();
+        c.emit(String.format("L%d:", l1));
+        condition.compile(c, env);
+
+        int l2 = labels.getNewLabel();
+        c.emit("ifeq L" + l2);
+
+        body.compile(c, env);
+        c.emit("pop");
+        c.emit("goto L" + l1);
+
+        c.emit(String.format("L%d:", l2));
     }
 
     @Override

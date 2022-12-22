@@ -1,18 +1,13 @@
 import exceptions.TypeError;
 import types.IType;
 import types.TypeBool;
+import util.Labels;
 
 public class ASTIf implements ASTNode {
 
     private static final String OPERATOR = "if";
 
     ASTNode condition, exp1, exp2;
-
-    /*
-    public ASTIf(ASTNode condition, ASTNode exp1) {
-        this.condition = condition;
-        this.exp1 = exp1;
-    }*/
 
     public ASTIf(ASTNode condition, ASTNode exp1, ASTNode exp2) {
         this.condition = condition;
@@ -31,7 +26,22 @@ public class ASTIf implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
+        Labels labels = Labels.getInstance();
 
+        condition.compile(c, env);
+
+        int l1 = labels.getNewLabel();
+        c.emit("ifeq L" + l1);
+
+        exp1.compile(c, env);
+
+        int l2 = labels.getNewLabel();
+        c.emit("goto L" + l2);
+
+        c.emit(String.format("L%d:", l1));
+        exp2.compile(c, env);
+
+        c.emit(String.format("L%d:", l2));
     }
 
     @Override

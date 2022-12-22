@@ -20,7 +20,7 @@ class	CodeBlock	{
     + ".method public static main([Ljava/lang/String;)V\n"
     + "\n"
     + "       ; set limits used by this method\n"
-    + "       .limit locals  1 \n"
+    + "       .limit locals  10 \n"
     + "       .limit stack 256\n"
     + "\n"
     + "       ; setup local variables:\n"

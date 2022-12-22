@@ -18,7 +18,8 @@ public class ASTSeq implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-
+        left.compile(c, env);
+        right.compile(c, env);
     }
 
     @Override

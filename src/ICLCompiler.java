@@ -14,7 +14,7 @@ public class ICLCompiler {
         File header = new File("../Header.j");
         try	{
             ASTNode	ast	= parser.Start();
-            ast.compile(code, new Environment<IValue>(null));
+            ast.compile(code, new Environment<>(null));
             FileOutputStream output = new FileOutputStream("Header.j");
             code.dump(new PrintStream(output));
         } catch	(Exception	e)	{	

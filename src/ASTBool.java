@@ -16,7 +16,8 @@ public class ASTBool implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-
+        if (val) c.emit("iconst_1");
+        else c.emit("iconst_0");
     }
 
     public IType typecheck(Environment<IType> env) {

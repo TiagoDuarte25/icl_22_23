@@ -20,7 +20,10 @@ public class ASTNot implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-
+        c.emit("iconst_1");
+        exp.compile(c, env);
+        c.emit("ineg");
+        c.emit("iadd");
     }
 
     @Override

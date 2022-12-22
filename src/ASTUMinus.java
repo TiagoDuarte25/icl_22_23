@@ -20,7 +20,8 @@ public class ASTUMinus implements ASTNode {
 
     @Override
     public void compile(CodeBlock c, Environment<IValue> env) {
-            c.emit("ineg "+ v);
+        v.compile(c, env);
+        c.emit("ineg");
     }
 
     @Override
